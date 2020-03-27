@@ -2,12 +2,12 @@ import numpy as np, bpy
 from mathutils import Matrix, Vector, Euler
 
 # the array is saved in the file 
-arr = np.load(r"/Users/jackieallex/Downloads/markerless-reconstructed/output_3d.npy") 
+arr = np.load(r"/Users/jackieallex/Downloads/markerless-reconstructed/output_3d_skeleton_with_hands.npy") 
 
 #3D array holding [[[x, y, z], [x, y, z]], [[x, y, z], [x, y, z]]] 
 #an array of frames, where each frame is an array of points and each point is an array of floats (x, y, z)
   
-#the first frame, holds 25 markers
+#the first frame
 markers_list = arr[0]
 
 #names of markers 
@@ -30,8 +30,13 @@ for col in markers_list:
     coord = Vector((float(col[0]), float(col[1]), float(col[2])))
     bpy.ops.object.add(type='EMPTY', location=coord)  
     mt = bpy.context.active_object  
-    #get name from name array "name_arr"
-    mt.name = name_arr[name]
+    if (name < 25):
+        #get name from name array "name_arr"
+        mt.name = name_arr[name]
+    elif(name < 46):
+        mt.name = "HandR"
+    else:
+        mt.name = "HandL"
     #add to order_of_markers to facilitate creating bones
     order_of_markers.append(mt)
     #increment index of name of empty in list
@@ -80,7 +85,7 @@ bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 #Set bones in front and show axis
 armature_data.show_in_front = True
 #True to show axis orientation of bones and false to hide it
-armature_data.data.show_axes = True
+armature_data.data.show_axes = False
 
 #Add root bone
 bone0 = armature_data.data.edit_bones.new('bone0')
@@ -124,7 +129,7 @@ for ob in bpy.data.objects:
 #bone22: head = 0, tail = 15
 #bone23: head = 15, tail = 17
 
-#Add wheel bones to armature
+#Add other bones to armature
 bone1 = add_child_bone('bone1', order_of_markers[1], order_of_markers[8])
 bone2 = add_child_bone('bone2', order_of_markers[8], order_of_markers[12])
 bone3 = add_child_bone('bone3', order_of_markers[12], order_of_markers[13])
@@ -149,7 +154,77 @@ bone21 = add_child_bone('bone21', order_of_markers[16], order_of_markers[18])
 bone22 = add_child_bone('bone22', order_of_markers[0], order_of_markers[15])
 bone23 = add_child_bone('bone23', order_of_markers[15], order_of_markers[17])
 
+#-----------------------------------------------------------------------------------
+# Add hands
+#bone structure by empties same for handL (left hand) and handR (right hand)_
+# https://github.com/CMU-Perceptual-Computing-Lab/openpose/raw/master/doc/media/keypoints_hand.png
+#handL0: head = 0, tail = 1
+#handL1: head = 1, tail = 2
+#handL2: head = 2, tail = 3
+#handL3: head = 3, tail = 4
+#handL4: head = 0, tail = 5
+#handL5: head = 5, tail = 6
+#handL6: head = 6, tail = 7
+#handL7: head = 7, tail = 8
+#handL8: head = 0, tail = 9
+#handL9: head = 9, tail = 10
+#handL10: head = 10, tail = 11
+#handL11: head = 11, tail = 12
+#handL12: head = 0, tail = 13
+#handL13: head = 13, tail = 14
+#handL14 head = 14, tail = 15
+#handL15: head = 15, tail = 16
+#handL16: head = 0, tail = 17
+#handL17: head = 17, tail = 18
+#handL18: head = 18, tail = 19
+#handL19: head = 19, tail = 20
 
+#based on marker # from order_of_markers array add bones for hands:
+#left hand is 46-66 so add 46 to original 
+handL0 = add_child_bone('handL0', order_of_markers[0+46], order_of_markers[1+46])
+handL1 = add_child_bone('handL1', order_of_markers[1+46], order_of_markers[2+46])
+handL2 = add_child_bone('handL2', order_of_markers[2+46], order_of_markers[3+46])
+handL3 = add_child_bone('handL3', order_of_markers[3+46], order_of_markers[4+46])
+handL4 = add_child_bone('handL4', order_of_markers[0+46], order_of_markers[5+46])
+handL5 = add_child_bone('handL5', order_of_markers[5+46], order_of_markers[6+46])
+handL6 = add_child_bone('handL6', order_of_markers[6+46], order_of_markers[7+46])
+handL7 = add_child_bone('handL7', order_of_markers[7+46], order_of_markers[8+46])
+handL8 = add_child_bone('handL8', order_of_markers[0+46], order_of_markers[9+46])
+handL9 = add_child_bone('handL9', order_of_markers[9+46], order_of_markers[10+46])
+handL10 = add_child_bone('handL10', order_of_markers[10+46], order_of_markers[11+46])
+handL11 = add_child_bone('handL11', order_of_markers[11+46], order_of_markers[12+46])
+handL12 = add_child_bone('handL12', order_of_markers[0+46], order_of_markers[13+46])
+handL13 = add_child_bone('handL13', order_of_markers[13+46], order_of_markers[14+46])
+handL14 = add_child_bone('handL14', order_of_markers[14+46], order_of_markers[15+46])
+handL15 = add_child_bone('handL15', order_of_markers[15+46], order_of_markers[16+46])
+handL16 = add_child_bone('handL16', order_of_markers[0+46], order_of_markers[17+46])
+handL17 = add_child_bone('handL17', order_of_markers[17+46], order_of_markers[18+46])
+handL18 = add_child_bone('handL18', order_of_markers[18+46], order_of_markers[19+46])
+handL19 = add_child_bone('handL19', order_of_markers[19+46], order_of_markers[20+46])
+
+#right hand is #25-45 so add 25 to original
+handR0 = add_child_bone('handR0', order_of_markers[0+25], order_of_markers[1+25])
+handR1 = add_child_bone('handR1', order_of_markers[1+25], order_of_markers[2+25])
+handR2 = add_child_bone('handR2', order_of_markers[2+25], order_of_markers[3+25])
+handR3 = add_child_bone('handR3', order_of_markers[3+25], order_of_markers[4+25])
+handR4 = add_child_bone('handR4', order_of_markers[0+25], order_of_markers[5+25])
+handR5 = add_child_bone('handR5', order_of_markers[5+25], order_of_markers[6+25])
+handR6 = add_child_bone('handR6', order_of_markers[6+25], order_of_markers[7+25])
+handR7 = add_child_bone('handR7', order_of_markers[7+25], order_of_markers[8+25])
+handR8 = add_child_bone('handR8', order_of_markers[0+25], order_of_markers[9+25])
+handR9 = add_child_bone('handR9', order_of_markers[9+25], order_of_markers[10+25])
+handR10 = add_child_bone('handR10', order_of_markers[10+25], order_of_markers[11+25])
+handR11 = add_child_bone('handR11', order_of_markers[11+25], order_of_markers[12+25])
+handR12 = add_child_bone('handR12', order_of_markers[0+25], order_of_markers[13+25])
+handR13 = add_child_bone('handR13', order_of_markers[13+25], order_of_markers[14+25])
+handR14 = add_child_bone('handR14', order_of_markers[14+25], order_of_markers[15+25])
+handR15 = add_child_bone('handR15', order_of_markers[15+25], order_of_markers[16+25])
+handR16 = add_child_bone('handR16', order_of_markers[0+25], order_of_markers[17+25])
+handR17 = add_child_bone('handR17', order_of_markers[17+25], order_of_markers[18+25])
+handR18 = add_child_bone('handR18', order_of_markers[18+25], order_of_markers[19+25])
+handR19 = add_child_bone('handR19', order_of_markers[19+25], order_of_markers[20+25])
+
+#-----------------------------------------------------------------------------------
 #parent heads and tails to empties
 #use bone constraints 
 def parent_to_empties(bone_name, head, tail):
@@ -202,7 +277,7 @@ parent_to_empties('bone23', order_of_markers[15], order_of_markers[17])
 # Animate! 
 #find number of frames in animation
 num_frames = len(arr) #500 frames at 120 fps
-
+    
 #create a new handler to change empty positions every frame
 def my_handler(scene): 
     #keep track of current_marker
