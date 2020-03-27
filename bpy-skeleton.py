@@ -1,6 +1,5 @@
-import numpy as np
+import numpy as np, bpy
 from mathutils import Matrix, Vector, Euler
-import bpy
 
 # the array is saved in the file 
 arr = np.load(r"/Users/jackieallex/Downloads/markerless-reconstructed/output_3d.npy") 
@@ -18,10 +17,7 @@ name_arr = ["Nose", "Neck", "RShoulder", "RElbow", "RWrist", "LShoulder",
 "RBigToe", "RSmallToe", "RHeel"]
 
 #use to create bones based on:
-# https://github.com/CMU-Perceptual-Computing-Lab/openpose/raw/master/doc/media/keypoints_pose_25.png
 order_of_markers = []
-
-print(markers_list)
 
 #Create empties at marker positions    
 name = 0
@@ -38,13 +34,16 @@ for col in markers_list:
     mt.name = name_arr[name]
     #add to order_of_markers to facilitate creating bones
     order_of_markers.append(mt)
-    #increment name of empty
+    #increment index of name of empty in list
     name += 1
+    #link empty to scene
     bpy.context.scene.collection.objects.link( mt )
+    #set empty's location 
     mt.location = coord
+    #set the display size of the empty
     mt.empty_display_size = 0.2
     #sanity check
-    print(coord)
+    #print(coord)
     
 #-----------------------------------------------------------------------------------
 #Create armature of skeleton if it is the 1st frame
@@ -59,7 +58,9 @@ def add_child_bone(bone_name, empty1, empty2):
     new_bone.tail = (0,0.5,0)
     #Set bone's location to wheel
     new_bone.matrix = empty2.matrix_world
+    #set location of bone head
     new_bone.head =  empty1.location
+    #set location of bone tail
     new_bone.tail = empty2.location
     return new_bone
 
@@ -76,8 +77,9 @@ bpy.context.view_layer.objects.active = armature_data
 armature_data.select_set(state=True)
 #Set edit mode
 bpy.ops.object.mode_set(mode='EDIT', toggle=False)
-#Set bones In front and show axis
+#Set bones in front and show axis
 armature_data.show_in_front = True
+#True to show axis orientation of bones and false to hide it
 armature_data.data.show_axes = True
 
 #Add root bone
@@ -151,6 +153,7 @@ bone23 = add_child_bone('bone23', order_of_markers[15], order_of_markers[17])
 #parent heads and tails to empties
 #use bone constraints 
 def parent_to_empties(bone_name, head, tail):
+    #enter pose mode
     bpy.ops.object.posemode_toggle()
     #Armature name is "Armature.004"
     marker = armature.data.bones[bone_name]
@@ -159,13 +162,18 @@ def parent_to_empties(bone_name, head, tail):
     #Set marker active
     bpy.context.object.data.bones.active = marker
     bone = bpy.context.object.pose.bones[bone_name]
+    #Copy Location Pose constraint: makes the bone's head follow the given empty
     bpy.ops.pose.constraint_add(type='COPY_LOCATION')
     bone.constraints["Copy Location"].target = head
+    #Stretch To Pose constraint: makes the bone's tail follow the given empty
+    #stretches the bones to reach the tail to that empty so head location is not affected
     bpy.ops.pose.constraint_add(type='STRETCH_TO')
     bone.constraints["Stretch To"].target = tail
+    #exit pose mode
     bpy.ops.object.posemode_toggle()
     
 #set parents of heads and tails for each bone 
+parent_to_empties('bone0', order_of_markers[0], order_of_markers[1])
 parent_to_empties('bone1', order_of_markers[1], order_of_markers[8])
 parent_to_empties('bone2', order_of_markers[8], order_of_markers[12])
 parent_to_empties('bone3', order_of_markers[12], order_of_markers[13])
@@ -191,45 +199,31 @@ parent_to_empties('bone22', order_of_markers[0], order_of_markers[15])
 parent_to_empties('bone23', order_of_markers[15], order_of_markers[17])
 
 #-----------------------------------------------------------------------------------
-# Animate!
+# Animate! 
 #find number of frames in animation
-num_frames = len(arr) #500 frames
+num_frames = len(arr) #500 frames at 120 fps
     
 #create a new handler to change empty positions every frame
-def my_handler(scene):
-    arr = np.load(r"/Users/jackieallex/Downloads/markerless-reconstructed/output_3d.npy") 
-    bpy.ops.object.select_all(action='DESELECT')
+def my_handler(scene): 
     #keep track of current_marker
     current_marker = 0
+    #find the current frame number
     frame = scene.frame_current
+    #get the list of marker points from the current frame
     markers_list = arr[frame]
+    #iterate through list of markers in this frame
     for col in markers_list:
         coord = Vector((float(col[0]), float(col[1]), float(col[2])))
         empty = order_of_markers[current_marker]
         #Set empty active
         bpy.context.view_layer.objects.active = empty
-        #Set empty selected
-        empty.select_set(state=True)
-        #change empty position
+        #change empty position : this is where the change in location every frame happens
         empty.location = coord
-        current_marker += 1
+        #increment counter of the number marker we are currently changing
+        current_marker += 1 
 
-        
-    #val = scene.objects['Cube'].location.x
-    #scene.objects['Sphere'].location.y = val + 1.6
-    
-    
+#function to register custom handler
 def register():
    bpy.app.handlers.frame_change_post.append(my_handler)
-
-#unregister handler
-#def unregister():
-    #bpy.app.handlers.frame_change_post.remove(my_handler)
-    
-    #once frame number hits max, unregister
-    #read data from each frame 
-    #starting after frame 0, change position of empties on each frame 
-    #persistent handler?
-    #test
     
 register()
