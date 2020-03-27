@@ -50,6 +50,9 @@ for col in markers_list:
     #sanity check
     #print(coord)
     
+print(len(order_of_markers))
+print(order_of_markers)
+    
 #-----------------------------------------------------------------------------------
 #Create armature of skeleton if it is the 1st frame
 
@@ -272,6 +275,49 @@ parent_to_empties('bone20', order_of_markers[0], order_of_markers[16])
 parent_to_empties('bone21', order_of_markers[16], order_of_markers[18])
 parent_to_empties('bone22', order_of_markers[0], order_of_markers[15])
 parent_to_empties('bone23', order_of_markers[15], order_of_markers[17])
+
+parent_to_empties('handL0', order_of_markers[0+46], order_of_markers[1+46])
+parent_to_empties('handL1', order_of_markers[1+46], order_of_markers[2+46])
+parent_to_empties('handL2', order_of_markers[2+46], order_of_markers[3+46])
+parent_to_empties('handL3', order_of_markers[3+46], order_of_markers[4+46])
+parent_to_empties('handL4', order_of_markers[0+46], order_of_markers[5+46])
+parent_to_empties('handL5', order_of_markers[5+46], order_of_markers[6+46])
+parent_to_empties('handL6', order_of_markers[6+46], order_of_markers[7+46])
+parent_to_empties('handL7', order_of_markers[7+46], order_of_markers[8+46])
+parent_to_empties('handL8', order_of_markers[0+46], order_of_markers[9+46])
+parent_to_empties('handL9', order_of_markers[9+46], order_of_markers[10+46])
+parent_to_empties('handL10', order_of_markers[10+46], order_of_markers[11+46])
+parent_to_empties('handL11', order_of_markers[11+46], order_of_markers[12+46])
+parent_to_empties('handL12', order_of_markers[0+46], order_of_markers[13+46])
+parent_to_empties('handL13', order_of_markers[13+46], order_of_markers[14+46])
+parent_to_empties('handL14', order_of_markers[14+46], order_of_markers[15+46])
+parent_to_empties('handL15', order_of_markers[15+46], order_of_markers[16+46])
+parent_to_empties('handL16', order_of_markers[0+46], order_of_markers[17+46])
+parent_to_empties('handL17', order_of_markers[17+46], order_of_markers[18+46])
+parent_to_empties('handL18', order_of_markers[18+46], order_of_markers[19+46])
+parent_to_empties('handL19', order_of_markers[19+46], order_of_markers[20+46])
+
+parent_to_empties('handR0', order_of_markers[0+25], order_of_markers[1+25])
+parent_to_empties('handR1', order_of_markers[1+25], order_of_markers[2+25])
+parent_to_empties('handR2', order_of_markers[2+25], order_of_markers[3+25])
+parent_to_empties('handR3', order_of_markers[3+25], order_of_markers[4+25])
+parent_to_empties('handR4', order_of_markers[0+25], order_of_markers[5+25])
+parent_to_empties('handR5', order_of_markers[5+25], order_of_markers[6+25])
+parent_to_empties('handR6', order_of_markers[6+25], order_of_markers[7+25])
+parent_to_empties('handR7', order_of_markers[7+25], order_of_markers[8+25])
+parent_to_empties('handR8', order_of_markers[0+25], order_of_markers[9+25])
+parent_to_empties('handR9', order_of_markers[9+25], order_of_markers[10+25])
+parent_to_empties('handR10', order_of_markers[10+25], order_of_markers[11+25])
+parent_to_empties('handR11', order_of_markers[11+25], order_of_markers[12+25])
+parent_to_empties('handR12', order_of_markers[0+25], order_of_markers[13+25])
+parent_to_empties('handR13', order_of_markers[13+25], order_of_markers[14+25])
+parent_to_empties('handR14', order_of_markers[14+25], order_of_markers[15+25])
+parent_to_empties('handR15', order_of_markers[15+25], order_of_markers[16+25])
+parent_to_empties('handR16', order_of_markers[0+25], order_of_markers[17+25])
+parent_to_empties('handR17', order_of_markers[17+25], order_of_markers[18+25])
+parent_to_empties('handR18', order_of_markers[18+25], order_of_markers[19+25])
+parent_to_empties('handR19', order_of_markers[19+25], order_of_markers[20+25])
+
 
 #-----------------------------------------------------------------------------------
 # Animate! 
