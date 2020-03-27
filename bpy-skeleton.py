@@ -15,7 +15,7 @@ markers_list = arr[0]
 name_arr = ["Nose", "Neck", "RShoulder", "RElbow", "RWrist", "LShoulder",
 "LElbow", "LWrist", "MidHip", "RHip", "RKnee", "RAnkle", "LHip", "LKnee",
 "LAnkle", "REye", "LEye", "REar", "LEar", "LBigToe", "LSmallToe", "LHeel",
-"RBigToe", "RSmallToe", "RHeel", "Background"]
+"RBigToe", "RSmallToe", "RHeel"]
 
 #use to create bones based on:
 # https://github.com/CMU-Perceptual-Computing-Lab/openpose/raw/master/doc/media/keypoints_pose_25.png
@@ -25,13 +25,12 @@ print(markers_list)
 
 #Create empties at marker positions    
 name = 0
-# make sure project unity is correct for imported data
+# make sure project unit is correct for imported data
 #Unsure of units
 bpy.context.scene.unit_settings.length_unit = 'METERS'
 #iterate through arr and create an empty object at that location for each element
 for col in markers_list:
     # parse string float value into floats, create Vector, set empty position to Vector
-    # multiply by .001 because original data is recorded in millimeters, but we want meters for this project
     coord = Vector((float(col[0]), float(col[1]), float(col[2])))
     bpy.ops.object.add(type='EMPTY', location=coord)  
     mt = bpy.context.active_object  
@@ -149,7 +148,6 @@ bone22 = add_child_bone('bone22', order_of_markers[0], order_of_markers[15])
 bone23 = add_child_bone('bone23', order_of_markers[15], order_of_markers[17])
 
 
-
 #parent heads and tails to empties
 #use bone constraints 
 def parent_to_empties(bone_name, head, tail):
@@ -191,3 +189,47 @@ parent_to_empties('bone20', order_of_markers[0], order_of_markers[16])
 parent_to_empties('bone21', order_of_markers[16], order_of_markers[18])
 parent_to_empties('bone22', order_of_markers[0], order_of_markers[15])
 parent_to_empties('bone23', order_of_markers[15], order_of_markers[17])
+
+#-----------------------------------------------------------------------------------
+# Animate!
+#find number of frames in animation
+num_frames = len(arr) #500 frames
+    
+#create a new handler to change empty positions every frame
+def my_handler(scene):
+    arr = np.load(r"/Users/jackieallex/Downloads/markerless-reconstructed/output_3d.npy") 
+    bpy.ops.object.select_all(action='DESELECT')
+    #keep track of current_marker
+    current_marker = 0
+    frame = scene.frame_current
+    markers_list = arr[frame]
+    for col in markers_list:
+        coord = Vector((float(col[0]), float(col[1]), float(col[2])))
+        empty = order_of_markers[current_marker]
+        #Set empty active
+        bpy.context.view_layer.objects.active = empty
+        #Set empty selected
+        empty.select_set(state=True)
+        #change empty position
+        empty.location = coord
+        current_marker += 1
+
+        
+    #val = scene.objects['Cube'].location.x
+    #scene.objects['Sphere'].location.y = val + 1.6
+    
+    
+def register():
+   bpy.app.handlers.frame_change_post.append(my_handler)
+
+#unregister handler
+#def unregister():
+    #bpy.app.handlers.frame_change_post.remove(my_handler)
+    
+    #once frame number hits max, unregister
+    #read data from each frame 
+    #starting after frame 0, change position of empties on each frame 
+    #persistent handler?
+    #test
+    
+register()
