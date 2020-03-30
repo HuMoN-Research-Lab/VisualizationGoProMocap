@@ -330,6 +330,8 @@ num_frames = len(arr) #500 frames at 120 fps
     
 #create a new handler to change empty positions every frame
 def my_handler(scene): 
+    #must be in pose mode to set keyframes
+    bpy.ops.object.mode_set(mode='POSE')
     #keep track of current_marker
     current_marker = 0
     #find the current frame number
@@ -339,21 +341,33 @@ def my_handler(scene):
     #iterate through list of markers in this frame
     for col in markers_list:
         coord = Vector((float(col[0]), float(col[1]), float(col[2])))
-        empty = order_of_markers[current_marker]
-        #Set empty active
-        bpy.context.view_layer.objects.active = empty
+        empty = order_of_markers[current_marker] 
         #change empty position : this is where the change in location every frame happens
         empty.location = coord
         #Set keyframes of the empty location at this frame to save the animation
-        empty.keyframe_insert(data_path='location',frame=scene.frame_current)
-        print(empty)
-        print("has been keyframed")
+        #empty.keyframe_insert(data_path='location',frame=scene.frame_current)
         #increment counter of the number marker we are currently changing
         current_marker += 1 
+        #future... may want to continue to look into how to keyframe each bone in amrature
+        if(current_marker == len(markers_list)):
+            print(scene.frame_current)
+            for bone in bpy.data.objects['Armature'].pose.bones:
+                bone.keyframe_insert(data_path = 'location')
+                if bone.rotation_mode == "QUATERNION":
+                    bone.keyframe_insert(data_path = 'rotation_quaternion')
+                else:
+                    bone.keyframe_insert(data_path = 'rotation_euler')
+                bone.keyframe_insert(data_path = 'scale')
+                
+         
+#-----------------------------------------------------------------------------------
+#bake action from keyframes 
+#bpy.ops.nla.bake(frame_start=0, frame_end=num_frames, only_selected=True, visual_keying=True, clear_constraints=False, use_current_action=False, bake_types={'POSE'})
             
-            
-            #handL20? not getting keyframe\d
-            
+#print ("Action: {}, First frame: {}, Second frame: {}".format(a.name, firstFrame, lastFrame))
+
+
+#bpy.ops.nla.bake(frame_start=1, frame_end=250, step=1, only_selected=True, visual_keying=False, clear_constraints=False, clear_parents=False, use_current_action=False, bake_types={'POSE'})
 #-----------------------------------------------------------------------------------
 #function to register custom handler
 def register():
