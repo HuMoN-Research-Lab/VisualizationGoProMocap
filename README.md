@@ -21,6 +21,8 @@ name_arr = ["Nose", "Neck", "RShoulder", "RElbow", "RWrist", "LShoulder",
 - add bones to armature object with heads and tails at correct empty positions
 - parent the heads and tails of bones to correct empty objects
 - register a custom handler function that will adjust the position of each empty for every frame
+- set keyframes of bones on every frame to save animation
+- bake animation pose data 
 - change framerate of project to fit the animation
 - correct the orientation and unit 
 
