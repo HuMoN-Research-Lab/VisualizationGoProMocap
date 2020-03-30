@@ -100,10 +100,14 @@ bone0.tail = order_of_markers[0].location
 bone0.head =  order_of_markers[1].location
 
 #get armature object
-for ob in bpy.data.objects:
-    if ob.type == 'ARMATURE':
-        armature = ob
-        break
+def get_armature():
+    for ob in bpy.data.objects:
+        if ob.type == 'ARMATURE':
+            armature = ob
+            break
+    return armature
+
+armature = get_armature()
     
 #bone structure by empties
 # https://github.com/CMU-Perceptual-Computing-Lab/openpose/raw/master/doc/media/keypoints_pose_25.png
@@ -155,7 +159,8 @@ bone19 = add_child_bone('bone19', order_of_markers[3], order_of_markers[4])
 bone20 = add_child_bone('bone20', order_of_markers[0], order_of_markers[16])
 bone21 = add_child_bone('bone21', order_of_markers[16], order_of_markers[18])
 bone22 = add_child_bone('bone22', order_of_markers[0], order_of_markers[15])
-bone23 = add_child_bone('bone23', order_of_markers[15], order_of_markers[17])
+#the rightEar is not aligning with the rest of the data 
+#bone23 = add_child_bone('bone23', order_of_markers[15], order_of_markers[17])
 
 #-----------------------------------------------------------------------------------
 # Add hands
@@ -233,7 +238,6 @@ handR19 = add_child_bone('handR19', order_of_markers[19+25], order_of_markers[20
 def parent_to_empties(bone_name, head, tail):
     #enter pose mode
     bpy.ops.object.posemode_toggle()
-    #Armature name is "Armature.004"
     marker = armature.data.bones[bone_name]
     #Set marker selected
     marker.select = True
@@ -274,7 +278,7 @@ parent_to_empties('bone19', order_of_markers[3], order_of_markers[4])
 parent_to_empties('bone20', order_of_markers[0], order_of_markers[16])
 parent_to_empties('bone21', order_of_markers[16], order_of_markers[18])
 parent_to_empties('bone22', order_of_markers[0], order_of_markers[15])
-parent_to_empties('bone23', order_of_markers[15], order_of_markers[17])
+#parent_to_empties('bone23', order_of_markers[15], order_of_markers[17])
 
 parent_to_empties('handL0', order_of_markers[0+46], order_of_markers[1+46])
 parent_to_empties('handL1', order_of_markers[1+46], order_of_markers[2+46])
@@ -340,9 +344,17 @@ def my_handler(scene):
         bpy.context.view_layer.objects.active = empty
         #change empty position : this is where the change in location every frame happens
         empty.location = coord
+        #Set keyframes of the empty location at this frame to save the animation
+        empty.keyframe_insert(data_path='location',frame=scene.frame_current)
+        print(empty)
+        print("has been keyframed")
         #increment counter of the number marker we are currently changing
         current_marker += 1 
-
+            
+            
+            #handL20? not getting keyframe\d
+            
+#-----------------------------------------------------------------------------------
 #function to register custom handler
 def register():
    bpy.app.handlers.frame_change_post.append(my_handler)
