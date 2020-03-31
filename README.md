@@ -31,5 +31,5 @@ If the skeleton from the data has hands, then the frame will have 67 points wher
 - change framerate of project to fit the animation
 - correct the orientation and unit 
 - after running script, press play to run the animation in the project -> as the frame # increases, the keyframes of the animation will be set.
--set a camera and render animation as png frames to create video or export as fbx to import into Unity
+- create a camera and render animation as png frames to create video or export as fbx to import into Unity
 
