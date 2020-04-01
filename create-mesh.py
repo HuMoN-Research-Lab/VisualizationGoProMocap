@@ -4,10 +4,17 @@ from mathutils import Vector
 from math import *
 
 #script to create a mesh of the armature 
-#first select armature, then click run script
 def CreateMesh():
+    
+    #get armature object
+    def get_armature():
+        for ob in bpy.data.objects:
+            if ob.type == 'ARMATURE':
+                armature = ob
+                break
+        return armature
 
-    obj = bpy.context.active_object
+    obj = get_armature()
 
     if obj == None:
         print( "No selection" )
@@ -124,4 +131,3 @@ def processArmature(context, arm, genVertexGroups = True):
     return meshObj
 
 CreateMesh()
-
