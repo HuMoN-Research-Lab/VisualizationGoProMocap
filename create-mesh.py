@@ -23,15 +23,15 @@ def CreateMesh():
     else:
         processArmature( bpy.context, obj )
 
-#Create the base object from the armature
-def meshFromArmature( arm ):
+#Use armature to create base object
+def armToMesh( arm ):
     name = arm.name + "_mesh"
-    meshData = bpy.data.meshes.new( name + "Data" )
-    meshObj = bpy.data.objects.new( name, meshData )
-    meshObj.matrix_world = arm.matrix_world.copy()
-    return meshObj
+    dataMesh = bpy.data.meshes.new( name + "Data" )
+    mesh = bpy.data.objects.new( name, dataMesh )
+    mesh.matrix_world = arm.matrix_world.copy()
+    return mesh
 
-#Create the bone geometry (vertices and faces)
+#Make vertices and faces 
 def boneGeometry( l1, l2, x, z, baseSize, l1Size, l2Size, base ):
     x1 = x * baseSize * l1Size 
     z1 = z * baseSize * l1Size
@@ -66,7 +66,7 @@ def processArmature(context, arm, genVertexGroups = True):
     print("processing armature {0}".format(arm.name))
 
     #Creates the mesh object
-    meshObj = meshFromArmature( arm )
+    meshObj = armToMesh( arm )
     context.collection.objects.link( meshObj )
 
     verts = []
@@ -112,11 +112,10 @@ def processArmature(context, arm, genVertexGroups = True):
         bpy.ops.object.mode_set(mode='OBJECT')
     else:
         bpy.ops.object.mode_set(mode='OBJECT')
-
     #Assigns the vertex groups
     if genVertexGroups:
-        for name, vertexGroup in vertexGroups.items():
-            groupObject = meshObj.vertex_groups.new(name)
+        for name1, vertexGroup in vertexGroups.items():
+            groupObject = meshObj.vertex_groups.new(name = name1)
             for (index, weight) in vertexGroup:
                 groupObject.add([index], weight, 'REPLACE')
 
