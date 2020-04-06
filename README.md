@@ -30,16 +30,12 @@ If the skeleton from the data has hands, then the frame will have 67 points wher
 
 ## Steps for set-up:
 - Create a new Blender project
-- In the script editor, open the script "bpy-skeleton-with-hands.py" (or "bpy-skeleton" for data without hands)
+- In the script editor, open the script "npy-to-frames.py" (requires data with hands, use "bpy-skeleton" for data without hands)
+- The script requires a camera so you may have to create one looking at the skeleton (will probably automate this step soon) 
 - In script, change file location of npy data to where it is on your local file system
-- Run script, markers and a skeleton should appear in the 3D viewport
-- Switch to the animation viewport, and hit play - keyframes should appear for each frame as the armature is animated 
-- When all frames have been keyframed, pause the animation. 
-- Go to object mode, select the armature and hit Object > Animation > Bake Action
-- In script editor, open script create-mesh.py and click run script. A mesh of the armature should appear in the 3D viewport.
-- Now, you can adjust lighting and cameras, and you are ready to export
-    - Run the script export.py to export as frames to create video animation, or export as fbx to import into Unity
-    
+- Change the file location of the output folder to be where you want the frames to save to
+- Run script
+
 ## How the scripts work:
 - import data from npy file
 - create empty objects at each point position
