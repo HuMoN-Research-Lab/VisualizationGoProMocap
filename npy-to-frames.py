@@ -3,6 +3,7 @@ from mathutils import Matrix, Vector, Euler
 from math import *
 import time
 
+print ("start")
 #Change: the path of the npy file 
 input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/output_3d_skeleton_with_hands.npy"
 #Change: the path of the folder you want to export png frames of animation to
@@ -56,9 +57,6 @@ for col in markers_list:
     mt.empty_display_size = 0.2
     #sanity check
     #print(coord)
-    
-print(len(order_of_markers))
-print(order_of_markers)
     
 #-----------------------------------------------------------------------------------
 #Create armature of skeleton if it is the 1st frame
@@ -334,7 +332,13 @@ parent_to_empties('handR19', order_of_markers[19+25], order_of_markers[20+25])
 # Animate! 
 #find number of frames in animation
 num_frames = len(arr) #500 frames at 120 fps
-    
+
+#change start frame of animation
+bpy.context.scene.frame_start = 1
+#change end frame of animation
+bpy.context.scene.frame_end = num_frames
+
+
 #create a new handler to change empty positions every frame
 def my_handler(scene): 
     frames_seen = 0
@@ -346,17 +350,15 @@ def my_handler(scene):
     frame = scene.frame_current
     #get the list of marker points from the current frame
     markers_list = arr[frame]
+   
     #iterate through list of markers in this frame
     for col in markers_list:
         coord = Vector((float(col[0]), float(col[1]), float(col[2])))
         empty = order_of_markers[current_marker] 
         #change empty position : this is where the change in location every frame happens
         empty.location = coord
-        #Set keyframes of the empty location at this frame to save the animation
-        #empty.keyframe_insert(data_path='location',frame=scene.frame_current)
-        #increment counter of the number marker we are currently changing
         current_marker += 1 
-        #future... may want to continue to look into how to keyframe each bone in amrature
+       #set keyframes for bones
         if(current_marker == len(markers_list)):
             frames_seen += 1
             for bone in bpy.data.objects['Armature'].pose.bones:
@@ -367,40 +369,22 @@ def my_handler(scene):
                 else:
                     bone.keyframe_insert(data_path = 'rotation_euler')
                 #bone.keyframe_insert(data_path = 'scale')
-    if (frames_seen == 500):
-        unregister();
-        
-        
                 
-#-----------------------------------------------------------------------------------
-#bake action from keyframes 
-#bpy.ops.nla.bake(frame_start=0, frame_end=num_frames, only_selected=True, visual_keying=True, clear_constraints=False, use_current_action=False, bake_types={'POSE'})
-            
-#print ("Action: {}, First frame: {}, Second frame: {}".format(a.name, firstFrame, lastFrame))
-
-
-#bpy.ops.nla.bake(frame_start=1, frame_end=250, step=1, only_selected=True, visual_keying=False, clear_constraints=False, clear_parents=False, use_current_action=False, bake_types={'POSE'})
 #-----------------------------------------------------------------------------------
 #function to register custom handler
 def register():
-   bpy.app.handlers.frame_change_post.append(my_handler)
+    bpy.app.handlers.frame_change_post.append(my_handler)
+   
    
 def unregister():
     bpy.app.handlers.frame_change_post.remove(my_handler)
     
 register()
 
+
+#-----------------------------------------------------------------------------------
 #script to create a mesh of the armature 
 def CreateMesh():
-    
-    #get armature object
-    def get_armature():
-        for ob in bpy.data.objects:
-            if ob.type == 'ARMATURE':
-                armature = ob
-                break
-        return armature
-
     obj = get_armature()
 
     if obj == None:
@@ -518,9 +502,34 @@ def processArmature(context, arm, genVertexGroups = True):
 
 CreateMesh()
 
+#-----------------------------------------------------------------------------------
+# Clean up the mesh by removing duplicate vertices, make sure all faces are quads, etc
+
+checked = set()
+for selected_object in bpy.data.objects:
+    if selected_object.type != 'MESH':
+        continue
+    meshdata = selected_object.data
+    if meshdata in checked:
+        continue
+    else:
+        checked.add(meshdata)
+    bpy.context.view_layer.objects.active = selected_object
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.remove_doubles()
+    bpy.ops.mesh.tris_convert_to_quads()
+    bpy.ops.mesh.normals_make_consistent()
+    bpy.ops.object.editmode_toggle()
+#Set armature active
+bpy.context.view_layer.objects.active = armature_data
+#Set armature selected
+armature_data.select_set(state=True)
+
+#-----------------------------------------------------------------------------------
 #script to export animation as pngs
 scene = bpy.context.scene
-for frame in range(scene.frame_start, scene.frame_end + 1):
+for frame in range(scene.frame_start, 10):
     #specify file path to the folder you want to export to
     scene.render.filepath = output_frames_folder + str(frame).zfill(4)
     scene.frame_set(frame)
