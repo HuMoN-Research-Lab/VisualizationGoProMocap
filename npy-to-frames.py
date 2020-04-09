@@ -2,15 +2,19 @@ import numpy as np, bpy
 from mathutils import Matrix, Vector, Euler
 from math import *
 import time
+import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import Element, tostring, SubElement, Comment
 
 
 #default number of frames to output is all of them - change this value to an integer if you 
 #want to output less 
-num_frames_output = 5
+#set to "all" to output all frames
+num_frames_output = "all"
+#num_frames_output = 3
 #Change: the path of the npy file 
 input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/output_3d_skeleton_with_hands.npy"
-#Change: the path of the folder you want to export png frames of animation to
-output_frames_folder = "/Users/jackieallex/Downloads/markerless-reconstructed/frame10test2/"
+#Change: the path of the folder you want to export xml file and png frames of animation to
+output_frames_folder = "/Users/jackieallex/Downloads/markerless-reconstructed"
 
 # the array is saved in the file 
 arr = np.load(input_npy) 
@@ -332,6 +336,29 @@ parent_to_empties('handR19', order_of_markers[19+25], order_of_markers[20+25])
 
 
 #-----------------------------------------------------------------------------------
+# Log info to XML file
+# create the file structure
+data = Element('top')
+
+comment = Comment('Generated for PyMOTW')
+data.append(comment)
+
+child = SubElement(data, 'child')
+child.text = 'This child contains text.'
+
+child_with_tail = SubElement(data, 'child_with_tail')
+child_with_tail.text = 'This child has regular text.'
+child_with_tail.tail = 'And "tail" text.'
+
+child_with_entity_ref = SubElement(data, 'child_with_entity_ref')
+child_with_entity_ref.text = 'This & that'
+
+#PLAN:
+#create function that takes in frame number
+#iterate through all bones and write to file each name, position, rotation
+#^^ automatically hit "Play" within script and stop when it reaches all frames?
+
+#-----------------------------------------------------------------------------------
 # Animate! 
 #find number of frames in animation
 num_frames = len(arr) #500 frames at 120 fps
@@ -538,9 +565,15 @@ else:
     num_frames_output += 1
 for frame in range(scene.frame_start, num_frames_output):
     #specify file path to the folder you want to export to
-    scene.render.filepath = output_frames_folder + str(frame).zfill(4)
+    scene.render.filepath = output_frames_folder + "/frames/" + str(frame).zfill(4)
     scene.frame_set(frame)
     bpy.ops.render.render(write_still=True)
     time.sleep(3)
 
+mydata = ET.tostring(data, encoding="unicode")
+myfile = open(output_frames_folder + "/output_data.xml", "w")
+myfile.write(mydata)
+myfile.close() 
+
+print(mydata)
 print("finished!")
