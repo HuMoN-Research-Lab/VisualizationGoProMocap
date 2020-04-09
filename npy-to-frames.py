@@ -3,7 +3,10 @@ from mathutils import Matrix, Vector, Euler
 from math import *
 import time
 
-print ("start")
+
+#default number of frames to output is all of them - change this value to an integer if you 
+#want to output less 
+num_frames_output = 5
 #Change: the path of the npy file 
 input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/output_3d_skeleton_with_hands.npy"
 #Change: the path of the folder you want to export png frames of animation to
@@ -529,7 +532,11 @@ armature_data.select_set(state=True)
 #-----------------------------------------------------------------------------------
 #script to export animation as pngs
 scene = bpy.context.scene
-for frame in range(scene.frame_start, 10):
+if num_frames_output is "all":
+    num_frames_output = scene.frame_end + 1
+else: 
+    num_frames_output += 1
+for frame in range(scene.frame_start, num_frames_output):
     #specify file path to the folder you want to export to
     scene.render.filepath = output_frames_folder + str(frame).zfill(4)
     scene.frame_set(frame)
