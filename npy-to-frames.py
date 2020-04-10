@@ -4,13 +4,14 @@ from math import *
 import time
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element, tostring, SubElement, Comment
+from datetime import datetime
 
 
 #default number of frames to output is all of them - change this value to an integer if you 
 #want to output less 
 #set to "all" to output all frames
 num_frames_output = "all"
-#num_frames_output = 3
+num_frames_output = 10
 #Change: the path of the npy file 
 input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/output_3d_skeleton_with_hands.npy"
 #Change: the path of the folder you want to export xml file and png frames of animation to
@@ -338,26 +339,20 @@ parent_to_empties('handR19', order_of_markers[19+25], order_of_markers[20+25])
 #-----------------------------------------------------------------------------------
 # Log info to XML file
 # create the file structure
-data = Element('top')
+data = Element('Data')
 
-comment = Comment('Generated for PyMOTW')
-data.append(comment)
+# current date and time
+now = datetime.now()
+timestamp = datetime.timestamp(now)
+dt_object = datetime.fromtimestamp(timestamp)
+date = SubElement(data, "timestamp =" + str(dt_object))
 
-child = SubElement(data, 'child')
-child.text = 'This child contains text.'
+frames = SubElement(data, 'frames')
 
-child_with_tail = SubElement(data, 'child_with_tail')
-child_with_tail.text = 'This child has regular text.'
-child_with_tail.tail = 'And "tail" text.'
-
-child_with_entity_ref = SubElement(data, 'child_with_entity_ref')
-child_with_entity_ref.text = 'This & that'
-
-#PLAN:
-#create function that takes in frame number
-#iterate through all bones and write to file each name, position, rotation
-#^^ automatically hit "Play" within script and stop when it reaches all frames?
-
+def create_node(parent, name, text):
+    child1 = SubElement(parent, name)
+    child1.text = text
+    
 #-----------------------------------------------------------------------------------
 # Animate! 
 #find number of frames in animation
@@ -383,6 +378,9 @@ def my_handler(scene):
    
     #iterate through list of markers in this frame
     for col in markers_list:
+        #log frame number in xml
+        frame = scene.frame_current
+        child0 = SubElement(frames, 'frame ' + str(frame))
         coord = Vector((float(col[0]), float(col[1]), float(col[2])))
         empty = order_of_markers[current_marker] 
         #change empty position : this is where the change in location every frame happens
@@ -399,6 +397,11 @@ def my_handler(scene):
                 else:
                     bone.keyframe_insert(data_path = 'rotation_euler')
                 #bone.keyframe_insert(data_path = 'scale')
+                create_node(child0, bone.name, "")
+                create_node(bone.name, "Location: ", str(bone.location))
+                create_node(bone.name, "Rotation: ", str(bone.rotation))
+                #child1 = SubElement(child, bone)
+                #child1.text = 'This child contains text.'
                 
 #-----------------------------------------------------------------------------------
 #function to register custom handler
@@ -556,6 +559,44 @@ bpy.context.view_layer.objects.active = armature_data
 #Set armature selected
 armature_data.select_set(state=True)
 
+# Clear all nodes in a mat
+def clear_material( material ):
+    if material.node_tree:
+        material.node_tree.links.clear()
+        material.node_tree.nodes.clear()
+
+# Create a node corresponding to a defined group
+def instanciate_group( nodes, group_name ):
+    group = nodes.new( type = 'ShaderNodeGroup' )
+    group.node_tree = bpy.data.node_groups[group_name]
+
+
+materials = bpy.data.materials
+
+mat_name = 'test'
+
+material = materials.get( mat_name )
+
+if not material:
+    material = materials.new( mat_name )
+
+# We clear it as we'll define it completely
+clear_material( material )
+
+material.use_nodes = True
+
+nodes = material.node_tree.nodes
+links = material.node_tree.links
+
+output = nodes.new( type = 'ShaderNodeOutputMaterial' )
+
+diffuse = nodes.new( type = 'ShaderNodeBsdfDiffuse' )
+
+#With names
+link = links.new( diffuse.outputs['BSDF'], output.inputs['Surface'] )
+#Or with indices
+#link = links.new( diffuse.outputs[0], output.inputs[0] )
+
 #-----------------------------------------------------------------------------------
 #script to export animation as pngs
 scene = bpy.context.scene
@@ -569,7 +610,10 @@ for frame in range(scene.frame_start, num_frames_output):
     scene.frame_set(frame)
     bpy.ops.render.render(write_still=True)
     time.sleep(3)
+    
 
+#-----------------------------------------------------------------------------------
+# Write and close XML file
 mydata = ET.tostring(data, encoding="unicode")
 myfile = open(output_frames_folder + "/output_data.xml", "w")
 myfile.write(mydata)
