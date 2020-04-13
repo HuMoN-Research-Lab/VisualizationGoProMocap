@@ -49,8 +49,6 @@ dt_object = datetime.fromtimestamp(timestamp)
 
 frames = SubElement(data, 'frames')
 
-myfile = open(output_frames_folder + "/output_data.xml", "w")
-
 def create_node(parent, name, text):
     child1 = SubElement(parent, name)
     child1.text = text
@@ -366,20 +364,18 @@ bpy.context.scene.frame_start = 1
 #change end frame of animation
 bpy.context.scene.frame_end = num_frames
 
-frame_var = -1;
-
 
 #create a new handler to change empty positions every frame
 def my_handler(scene): 
     frames_seen = 0
-    print(frame_var)
+    print("frame")
+    print(scene.frame_current)
     #must be in pose mode to set keyframes
     bpy.ops.object.mode_set(mode='POSE')
     #keep track of current_marker
     current_marker = 0
     #find the current frame number
     frame = scene.frame_current
-    child0 = SubElement(frames, 'frame' + str(frame))
     #get the list of marker points from the current frame
     markers_list = arr[frame]
     #iterate through list of markers in this frame
@@ -402,24 +398,7 @@ def my_handler(scene):
                 else:
                     bone.keyframe_insert(data_path = 'rotation_euler')
                 #bone.keyframe_insert(data_path = 'scale')
-                bone_node = SubElement(child0, bone.name)
-                create_node(bone_node, "Location", str(bone.location))
-                create_node(bone_node, "Rotation", str(bone.rotation_quaternion))
-                #child1 = SubElement(child, bone)
-                #child1.text = 'This child contains text.'
                 
-#-----------------------------------------------------------------------------------
-#function to register custom handler
-def register():
-    bpy.app.handlers.frame_change_post.append(my_handler)
-   
-   
-def unregister():
-    bpy.app.handlers.frame_change_post.remove(my_handler)
-    
-register()
-
-
 #-----------------------------------------------------------------------------------
 #script to create a mesh of the armature 
 def CreateMesh():
@@ -569,6 +548,17 @@ armature_data.select_set(state=True)
 
 
 #-----------------------------------------------------------------------------------
+#function to register custom handler
+bpy.app.handlers.frame_change_post.clear()
+def register():
+    bpy.app.handlers.frame_change_post.append(my_handler)
+   
+   
+def unregister():
+    bpy.app.handlers.frame_change_post.remove(my_handler)
+    
+register()
+#-----------------------------------------------------------------------------------
 #script to export animation as pngs
 scene = bpy.context.scene
 if num_frames_output is "all":
@@ -577,11 +567,14 @@ else:
     num_frames_output += 1
 for frame in range(scene.frame_start, num_frames_output):
     #specify file path to the folder you want to export to
-    scene.render.filepath = output_frames_folder + "/frames/" + str(frame).zfill(4)
+    scene.render.filepath = output_frames_folder + "/frames/" + str(frame)
     scene.frame_set(frame)
     bpy.ops.render.render(write_still=True)
-    time.sleep(3)
-    
+    child0 = SubElement(frames, 'frame' + str(frame))
+    for bone in bpy.data.objects['Armature'].pose.bones:
+        bone_node = SubElement(child0, bone.name)
+        create_node(bone_node, "Location", str(bone.location))
+        create_node(bone_node, "Rotation", str(bone.rotation_quaternion))
 
 #-----------------------------------------------------------------------------------
 # Write and close XML file
