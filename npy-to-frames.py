@@ -45,7 +45,8 @@ data = Element('Data')
 now = datetime.now()
 timestamp = datetime.timestamp(now)
 dt_object = datetime.fromtimestamp(timestamp)
-## date = SubElement(data, "timestamp =" + str(dt_object))
+date = SubElement(data, "timestamp")
+date.text = str(dt_object)
 
 frames = SubElement(data, 'frames')
 
@@ -380,7 +381,6 @@ def my_handler(scene):
     markers_list = arr[frame]
     #iterate through list of markers in this frame
     for col in markers_list:
-        #log frame number in xml
         frame = scene.frame_current
         coord = Vector((float(col[0]), float(col[1]), float(col[2])))
         empty = order_of_markers[current_marker] 
@@ -559,7 +559,18 @@ def unregister():
     
 register()
 #-----------------------------------------------------------------------------------
-#script to export animation as pngs
+#Adjust camera position / rotation
+bpy.ops.object.posemode_toggle()
+camera = bpy.data.objects["Camera"]
+camera.location = Vector((0, 0, -60))
+camera.rotation_mode = "QUATERNION"
+camera.rotation_quaternion[0] = 0
+camera.rotation_quaternion[1] = 20
+camera.rotation_quaternion[2] = -20
+camera.rotation_quaternion[3] = 0
+
+#-----------------------------------------------------------------------------------
+#script to export animation as pngs and add info to XML file
 scene = bpy.context.scene
 if num_frames_output is "all":
     num_frames_output = scene.frame_end + 1
@@ -570,9 +581,20 @@ for frame in range(scene.frame_start, num_frames_output):
     scene.render.filepath = output_frames_folder + "/frames/" + str(frame)
     scene.frame_set(frame)
     bpy.ops.render.render(write_still=True)
+    #add information for each frame to XML file
     child0 = SubElement(frames, 'frame' + str(frame))
+    child1 = SubElement(child0, 'markers')
+    child2 = SubElement(child0, 'armature')
+    current_marker = 0
+    for col in markers_list:
+        coord = Vector((float(col[0]), float(col[1]), float(col[2])))
+        empty = order_of_markers[current_marker] 
+        marker_node = SubElement(child1, empty.name)
+        create_node(marker_node, "Location", str(coord))
+        current_marker += 1
+    
     for bone in bpy.data.objects['Armature'].pose.bones:
-        bone_node = SubElement(child0, bone.name)
+        bone_node = SubElement(child2, bone.name)
         create_node(bone_node, "Location", str(bone.location))
         create_node(bone_node, "Rotation", str(bone.rotation_quaternion))
 
