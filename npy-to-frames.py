@@ -5,13 +5,14 @@ import time
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element, tostring, SubElement, Comment
 from datetime import datetime
+import xml.dom.minidom
 
 
 #default number of frames to output is all of them - change this value to an integer if you 
 #want to output less 
 #set to "all" to output all frames
 num_frames_output = "all"
-num_frames_output = 10
+num_frames_output = 3
 #Change: the path of the npy file 
 input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/output_3d_skeleton_with_hands.npy"
 #Change: the path of the folder you want to export xml file and png frames of animation to
@@ -34,6 +35,26 @@ name_arr = ["Nose", "Neck", "RShoulder", "RElbow", "RWrist", "LShoulder",
 
 #use to create bones based on:
 order_of_markers = []
+
+#-----------------------------------------------------------------------------------
+# Log info to XML file
+# create the file structure
+data = Element('Data')
+
+# current date and time
+now = datetime.now()
+timestamp = datetime.timestamp(now)
+dt_object = datetime.fromtimestamp(timestamp)
+## date = SubElement(data, "timestamp =" + str(dt_object))
+
+frames = SubElement(data, 'frames')
+
+myfile = open(output_frames_folder + "/output_data.xml", "w")
+
+def create_node(parent, name, text):
+    child1 = SubElement(parent, name)
+    child1.text = text
+#-----------------------------------------------------------------------------------   
 
 #Create empties at marker positions    
 name = 0
@@ -335,24 +356,6 @@ parent_to_empties('handR17', order_of_markers[17+25], order_of_markers[18+25])
 parent_to_empties('handR18', order_of_markers[18+25], order_of_markers[19+25])
 parent_to_empties('handR19', order_of_markers[19+25], order_of_markers[20+25])
 
-
-#-----------------------------------------------------------------------------------
-# Log info to XML file
-# create the file structure
-data = Element('Data')
-
-# current date and time
-now = datetime.now()
-timestamp = datetime.timestamp(now)
-dt_object = datetime.fromtimestamp(timestamp)
-date = SubElement(data, "timestamp =" + str(dt_object))
-
-frames = SubElement(data, 'frames')
-
-def create_node(parent, name, text):
-    child1 = SubElement(parent, name)
-    child1.text = text
-    
 #-----------------------------------------------------------------------------------
 # Animate! 
 #find number of frames in animation
@@ -363,31 +366,33 @@ bpy.context.scene.frame_start = 1
 #change end frame of animation
 bpy.context.scene.frame_end = num_frames
 
+frame_var = -1;
+
 
 #create a new handler to change empty positions every frame
 def my_handler(scene): 
     frames_seen = 0
+    print(frame_var)
     #must be in pose mode to set keyframes
     bpy.ops.object.mode_set(mode='POSE')
     #keep track of current_marker
     current_marker = 0
     #find the current frame number
     frame = scene.frame_current
+    child0 = SubElement(frames, 'frame' + str(frame))
     #get the list of marker points from the current frame
     markers_list = arr[frame]
-   
     #iterate through list of markers in this frame
     for col in markers_list:
         #log frame number in xml
         frame = scene.frame_current
-        child0 = SubElement(frames, 'frame ' + str(frame))
         coord = Vector((float(col[0]), float(col[1]), float(col[2])))
         empty = order_of_markers[current_marker] 
         #change empty position : this is where the change in location every frame happens
         empty.location = coord
         current_marker += 1 
        #set keyframes for bones
-        if(current_marker == len(markers_list)):
+        if(current_marker == (len(markers_list) - 1)):
             frames_seen += 1
             for bone in bpy.data.objects['Armature'].pose.bones:
                 bpy.ops.pose.visual_transform_apply()
@@ -397,9 +402,9 @@ def my_handler(scene):
                 else:
                     bone.keyframe_insert(data_path = 'rotation_euler')
                 #bone.keyframe_insert(data_path = 'scale')
-                create_node(child0, bone.name, "")
-                create_node(bone.name, "Location: ", str(bone.location))
-                create_node(bone.name, "Rotation: ", str(bone.rotation))
+                bone_node = SubElement(child0, bone.name)
+                create_node(bone_node, "Location", str(bone.location))
+                create_node(bone_node, "Rotation", str(bone.rotation_quaternion))
                 #child1 = SubElement(child, bone)
                 #child1.text = 'This child contains text.'
                 
@@ -559,43 +564,9 @@ bpy.context.view_layer.objects.active = armature_data
 #Set armature selected
 armature_data.select_set(state=True)
 
-# Clear all nodes in a mat
-def clear_material( material ):
-    if material.node_tree:
-        material.node_tree.links.clear()
-        material.node_tree.nodes.clear()
+#-----------------------------------------------------------------------------------
+#material assignment
 
-# Create a node corresponding to a defined group
-def instanciate_group( nodes, group_name ):
-    group = nodes.new( type = 'ShaderNodeGroup' )
-    group.node_tree = bpy.data.node_groups[group_name]
-
-
-materials = bpy.data.materials
-
-mat_name = 'test'
-
-material = materials.get( mat_name )
-
-if not material:
-    material = materials.new( mat_name )
-
-# We clear it as we'll define it completely
-clear_material( material )
-
-material.use_nodes = True
-
-nodes = material.node_tree.nodes
-links = material.node_tree.links
-
-output = nodes.new( type = 'ShaderNodeOutputMaterial' )
-
-diffuse = nodes.new( type = 'ShaderNodeBsdfDiffuse' )
-
-#With names
-link = links.new( diffuse.outputs['BSDF'], output.inputs['Surface'] )
-#Or with indices
-#link = links.new( diffuse.outputs[0], output.inputs[0] )
 
 #-----------------------------------------------------------------------------------
 #script to export animation as pngs
@@ -614,10 +585,19 @@ for frame in range(scene.frame_start, num_frames_output):
 
 #-----------------------------------------------------------------------------------
 # Write and close XML file
+
+#raw file
 mydata = ET.tostring(data, encoding="unicode")
-myfile = open(output_frames_folder + "/output_data.xml", "w")
+myfile = open(output_frames_folder + "/output_data-raw.xml", "w")
 myfile.write(mydata)
 myfile.close() 
+
+#formatted human-readable file
+dom = xml.dom.minidom.parseString(mydata)
+pretty_xml_as_string = dom.toprettyxml()
+myfile2 = open(output_frames_folder + "/output_data_pretty.xml", "w")
+myfile2.write(pretty_xml_as_string)
+myfile2.close()
 
 print(mydata)
 print("finished!")
