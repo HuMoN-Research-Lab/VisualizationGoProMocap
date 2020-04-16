@@ -385,7 +385,11 @@ def my_handler(scene):
         coord = Vector((float(col[0]), float(col[1]), float(col[2])))
         empty = order_of_markers[current_marker] 
         #change empty position : this is where the change in location every frame happens
+        #line to test IK solver
+        #if(empty.name != "RElbow"):
         empty.location = coord
+        else:
+            print(empty.location)
         current_marker += 1 
        #set keyframes for bones
         if(current_marker == (len(markers_list) - 1)):
