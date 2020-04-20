@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Data>
-	<timestamp>2020-04-16 09:14:12.679441</timestamp>
+	<timestamp>2020-04-20 11:57:46.296388</timestamp>
 	<frames>
 		<frame1>
 			<markers>
@@ -281,11 +281,11 @@
 				</bone17>
 				<bone18>
 					<Location>&lt;Vector (-0.0002, -0.0001, 0.0039)&gt;</Location>
-					<Rotation>&lt;Quaternion (w=1.0000, x=-0.0002, y=-0.0000, z=-0.0000)&gt;</Rotation>
+					<Rotation>&lt;Quaternion (w=1.0000, x=0.0012, y=0.0000, z=-0.0009)&gt;</Rotation>
 				</bone18>
 				<bone19>
-					<Location>&lt;Vector (0.0000, -0.0000, 0.0000)&gt;</Location>
-					<Rotation>&lt;Quaternion (w=1.0000, x=-0.0001, y=-0.0000, z=-0.0000)&gt;</Rotation>
+					<Location>&lt;Vector (0.0093, 0.0893, 0.0844)&gt;</Location>
+					<Rotation>&lt;Quaternion (w=1.0000, x=-0.0044, y=0.0000, z=0.0004)&gt;</Rotation>
 				</bone19>
 				<bone20>
 					<Location>&lt;Vector (-0.0400, 0.0603, -0.0387)&gt;</Location>
@@ -305,7 +305,7 @@
 				</handL0>
 				<handL1>
 					<Location>&lt;Vector (-0.1550, -0.0169, 0.0343)&gt;</Location>
-					<Rotation>&lt;Quaternion (w=0.9828, x=-0.0386, y=-0.0070, z=-0.1802)&gt;</Rotation>
+					<Rotation>&lt;Quaternion (w=0.9828, x=-0.0386, y=-0.0071, z=-0.1802)&gt;</Rotation>
 				</handL1>
 				<handL2>
 					<Location>&lt;Vector (0.0294, 0.0492, -0.0043)&gt;</Location>
@@ -413,7 +413,7 @@
 				</handR7>
 				<handR8>
 					<Location>&lt;Vector (-0.0128, -0.0591, -0.1146)&gt;</Location>
-					<Rotation>&lt;Quaternion (w=1.0000, x=0.0075, y=0.0000, z=-0.0066)&gt;</Rotation>
+					<Rotation>&lt;Quaternion (w=0.9999, x=0.0075, y=0.0000, z=-0.0066)&gt;</Rotation>
 				</handR8>
 				<handR9>
 					<Location>&lt;Vector (0.0245, 0.0601, -0.0230)&gt;</Location>
@@ -740,11 +740,11 @@
 				</bone17>
 				<bone18>
 					<Location>&lt;Vector (-0.0001, -0.0015, -0.0002)&gt;</Location>
-					<Rotation>&lt;Quaternion (w=1.0000, x=0.0000, y=-0.0000, z=-0.0000)&gt;</Rotation>
+					<Rotation>&lt;Quaternion (w=1.0000, x=0.0003, y=0.0000, z=-0.0000)&gt;</Rotation>
 				</bone18>
 				<bone19>
-					<Location>&lt;Vector (0.0000, -0.0000, 0.0000)&gt;</Location>
-					<Rotation>&lt;Quaternion (w=1.0000, x=0.0006, y=0.0000, z=-0.0002)&gt;</Rotation>
+					<Location>&lt;Vector (-0.0001, 0.0023, 0.0088)&gt;</Location>
+					<Rotation>&lt;Quaternion (w=1.0000, x=0.0001, y=0.0000, z=-0.0002)&gt;</Rotation>
 				</bone19>
 				<bone20>
 					<Location>&lt;Vector (-0.0432, 0.0628, -0.0394)&gt;</Location>
@@ -756,7 +756,7 @@
 				</bone21>
 				<bone22>
 					<Location>&lt;Vector (-0.0634, 0.0054, 0.0577)&gt;</Location>
-					<Rotation>&lt;Quaternion (w=0.9956, x=0.0450, y=-0.0047, z=0.0821)&gt;</Rotation>
+					<Rotation>&lt;Quaternion (w=0.9956, x=0.0450, y=-0.0046, z=0.0821)&gt;</Rotation>
 				</bone22>
 				<handL0>
 					<Location>&lt;Vector (-0.0241, 0.0004, -0.0136)&gt;</Location>
@@ -1199,11 +1199,11 @@
 				</bone17>
 				<bone18>
 					<Location>&lt;Vector (-0.0740, -0.0869, -0.3996)&gt;</Location>
-					<Rotation>&lt;Quaternion (w=0.9998, x=0.0198, y=0.0001, z=-0.0037)&gt;</Rotation>
+					<Rotation>&lt;Quaternion (w=0.9998, x=0.0201, y=0.0001, z=-0.0037)&gt;</Rotation>
 				</bone18>
 				<bone19>
-					<Location>&lt;Vector (0.0000, -0.0000, 0.0000)&gt;</Location>
-					<Rotation>&lt;Quaternion (w=1.0000, x=0.0007, y=-0.0000, z=-0.0001)&gt;</Rotation>
+					<Location>&lt;Vector (0.0001, 0.0011, 0.0064)&gt;</Location>
+					<Rotation>&lt;Quaternion (w=1.0000, x=0.0003, y=0.0000, z=-0.0001)&gt;</Rotation>
 				</bone19>
 				<bone20>
 					<Location>&lt;Vector (-0.0420, 0.0637, -0.0403)&gt;</Location>
@@ -1215,7 +1215,7 @@
 				</bone21>
 				<bone22>
 					<Location>&lt;Vector (-0.0632, 0.0070, 0.0584)&gt;</Location>
-					<Rotation>&lt;Quaternion (w=0.9956, x=0.0448, y=-0.0047, z=0.0819)&gt;</Rotation>
+					<Rotation>&lt;Quaternion (w=0.9956, x=0.0448, y=-0.0046, z=0.0819)&gt;</Rotation>
 				</bone22>
 				<handL0>
 					<Location>&lt;Vector (0.0255, 0.0595, 0.0439)&gt;</Location>
@@ -1359,7 +1359,7 @@
 				</handR14>
 				<handR15>
 					<Location>&lt;Vector (-0.0226, -0.0056, 0.0431)&gt;</Location>
-					<Rotation>&lt;Quaternion (w=0.9987, x=0.0068, y=0.0109, z=-0.0490)&gt;</Rotation>
+					<Rotation>&lt;Quaternion (w=0.9987, x=0.0068, y=0.0110, z=-0.0490)&gt;</Rotation>
 				</handR15>
 				<handR16>
 					<Location>&lt;Vector (-0.0268, -0.0179, -0.0058)&gt;</Location>

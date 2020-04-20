@@ -388,8 +388,6 @@ def my_handler(scene):
         #line to test IK solver
         #if(empty.name != "RElbow"):
         empty.location = coord
-        else:
-            print(empty.location)
         current_marker += 1 
        #set keyframes for bones
         if(current_marker == (len(markers_list) - 1)):
