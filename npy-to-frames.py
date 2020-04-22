@@ -14,7 +14,7 @@ import xml.dom.minidom
 num_frames_output = "all"
 num_frames_output = 3
 #Change: the path of the npy file 
-input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/output_3d_skeleton_with_hands.npy"
+input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/npy data files/output_3d_skeleton_with_hands.npy"
 #Change: the path of the folder you want to export xml file and png frames of animation to
 output_frames_folder = "/Users/jackieallex/Downloads/markerless-reconstructed"
 
@@ -411,7 +411,7 @@ def CreateMesh():
     elif obj.type != 'ARMATURE':
         print( "Armature expected" )
     else:
-        processArmature( bpy.context, obj )
+        return processArmature( bpy.context, obj )
 
 #Use armature to create base object
 def armToMesh( arm ):
@@ -519,7 +519,7 @@ def processArmature(context, arm, genVertexGroups = True):
 
     return meshObj
 
-CreateMesh()
+mesh_obob = CreateMesh()
 
 #-----------------------------------------------------------------------------------
 # Clean up the mesh by removing duplicate vertices, make sure all faces are quads, etc
@@ -547,7 +547,24 @@ armature_data.select_set(state=True)
 
 #-----------------------------------------------------------------------------------
 #material assignment
+print("mesh here")
+print(mesh_obob)
+ob = mesh_obob
 
+# Get material
+mat = bpy.data.materials.get("Material")
+if mat is None:
+    # create material
+    print("mat was none")
+    mat = bpy.data.materials.new(name="Material")
+
+# Assign it to object
+if ob.data.materials:
+    # assign to 1st material slot
+    ob.data.materials[0] = mat
+else:
+    # no slots
+    ob.data.materials.append(mat)
 
 #-----------------------------------------------------------------------------------
 #function to register custom handler
@@ -573,28 +590,33 @@ camera.rotation_quaternion[3] = 0
 
 #-----------------------------------------------------------------------------------
 #script to export animation as pngs and add info to XML file
+print("Saving frames...")
 scene = bpy.context.scene
+#set the number of frames to output 
 if num_frames_output is "all":
     num_frames_output = scene.frame_end + 1
 else: 
     num_frames_output += 1
+#iterate through all frames
 for frame in range(scene.frame_start, num_frames_output):
     #specify file path to the folder you want to export to
     scene.render.filepath = output_frames_folder + "/frames/" + str(frame)
     scene.frame_set(frame)
+    #render frame
     bpy.ops.render.render(write_still=True)
     #add information for each frame to XML file
     child0 = SubElement(frames, 'frame' + str(frame))
     child1 = SubElement(child0, 'markers')
     child2 = SubElement(child0, 'armature')
     current_marker = 0
+    #Log XML for each marker from original npy data
     for col in markers_list:
         coord = Vector((float(col[0]), float(col[1]), float(col[2])))
         empty = order_of_markers[current_marker] 
         marker_node = SubElement(child1, empty.name)
         create_node(marker_node, "Location", str(coord))
         current_marker += 1
-    
+    #Log XML for each bone's location and rotation
     for bone in bpy.data.objects['Armature'].pose.bones:
         bone_node = SubElement(child2, bone.name)
         create_node(bone_node, "Location", str(bone.location))
@@ -602,19 +624,18 @@ for frame in range(scene.frame_start, num_frames_output):
 
 #-----------------------------------------------------------------------------------
 # Write and close XML file
-
-#raw file
+print("Writing XML...")
+#raw XML file
 mydata = ET.tostring(data, encoding="unicode")
 myfile = open(output_frames_folder + "/output_data-raw.xml", "w")
 myfile.write(mydata)
 myfile.close() 
 
-#formatted human-readable file
+#formatted human-readable XML file
 dom = xml.dom.minidom.parseString(mydata)
 pretty_xml_as_string = dom.toprettyxml()
 myfile2 = open(output_frames_folder + "/output_data_pretty.xml", "w")
 myfile2.write(pretty_xml_as_string)
 myfile2.close()
 
-print(mydata)
 print("finished!")
