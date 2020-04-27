@@ -29,12 +29,12 @@ If the skeleton from the data has hands, then the frame will have 67 points wher
 - 47-67 : left hand
 
 ## Steps for set-up:
-- Create a new Blender project
-- In the script editor, open the script "npy-to-frames.py" (requires data with hands, use "bpy-skeleton" for data without hands)
-- The script requires a camera so you may have to create one looking at the skeleton (will probably automate this step soon) 
+- Open Blender project starter file for desired lighting/material & camera, or start with a new Blender 3D project
+- In the script editor, open the script "npy-to-frames.py" (requires data with hands, use "bpy-skeleton.py" for data without hands)
 - In script, change file location of npy data to where it is on your local file system
-- Change the file location of the output folder to be where you want the frames to save to
+- Change the file location of the output folder to be where you want the frames and XML data output to save to
 - Run script
+- This will export the frames of the full animation of the npy file from the view of the camera in 3D space with a 3D skeleton 
 
 ## How the scripts work:
 - import data from npy file
@@ -43,5 +43,8 @@ If the skeleton from the data has hands, then the frame will have 67 points wher
 - add bones to armature object with heads and tails at correct empty positions
 - parent the heads and tails of bones to correct empty objects
 - register a custom handler function that will adjust the position of each empty for every frame
-- set keyframes of bones on every frame to save animation
+- set keyframes of bones' location and rotation on every frame to save animation
 - create mesh with vertex groups and parent to armature 
+- assign material to mesh
+- Export png frames
+- Export XML data for each frame 

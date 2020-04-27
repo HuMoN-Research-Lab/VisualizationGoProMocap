@@ -627,7 +627,7 @@ for frame in range(scene.frame_start, num_frames_output):
 print("Writing XML...")
 #raw XML file
 mydata = ET.tostring(data, encoding="unicode")
-myfile = open(output_frames_folder + "/output_data-raw.xml", "w")
+myfile = open(output_frames_folder + "/output_data_raw.xml", "w")
 myfile.write(mydata)
 myfile.close() 
 
