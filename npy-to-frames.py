@@ -123,15 +123,6 @@ armature_data.show_in_front = True
 #True to show axis orientation of bones and false to hide it
 armature_data.data.show_axes = False
 
-#Add root bone
-bone0 = armature_data.data.edit_bones.new('bone0')
-#Set its orientation and size
-bone0.head = (0,0,0)
-bone0.tail = (0,0.5,0)
-#Set its location 
-bone0.tail = order_of_markers[0].location
-bone0.head =  order_of_markers[1].location
-
 #get armature object
 def get_armature():
     for ob in bpy.data.objects:
@@ -169,29 +160,32 @@ armature = get_armature()
 #bone22: head = 0, tail = 15
 #bone23: head = 15, tail = 17
 
-#Add other bones to armature
-bone1 = add_child_bone('bone1', order_of_markers[1], order_of_markers[8])
-bone2 = add_child_bone('bone2', order_of_markers[8], order_of_markers[12])
-bone3 = add_child_bone('bone3', order_of_markers[12], order_of_markers[13])
-bone4 = add_child_bone('bone4', order_of_markers[13], order_of_markers[14])
-bone5 = add_child_bone('bone5', order_of_markers[14], order_of_markers[21])
-bone6 = add_child_bone('bone6', order_of_markers[14], order_of_markers[19])
-bone7 = add_child_bone('bone7', order_of_markers[19], order_of_markers[20])
-bone8 = add_child_bone('bone8', order_of_markers[8], order_of_markers[9])
-bone9 = add_child_bone('bone9', order_of_markers[9], order_of_markers[10])
-bone10 = add_child_bone('bone10', order_of_markers[10], order_of_markers[11])
-bone11 = add_child_bone('bone11', order_of_markers[11], order_of_markers[24])
-bone12 = add_child_bone('bone12', order_of_markers[11], order_of_markers[22])
-bone13 = add_child_bone('bone13', order_of_markers[22], order_of_markers[23])
-bone14 = add_child_bone('bone14', order_of_markers[1], order_of_markers[5])
-bone15 = add_child_bone('bone15', order_of_markers[5], order_of_markers[6])
-bone16 = add_child_bone('bone16', order_of_markers[6], order_of_markers[7])
-bone17 = add_child_bone('bone17', order_of_markers[1], order_of_markers[2])
-bone18 = add_child_bone('bone18', order_of_markers[2], order_of_markers[3])
-bone19 = add_child_bone('bone19', order_of_markers[3], order_of_markers[4])
-bone20 = add_child_bone('bone20', order_of_markers[0], order_of_markers[16])
-bone21 = add_child_bone('bone21', order_of_markers[16], order_of_markers[18])
-bone22 = add_child_bone('bone22', order_of_markers[0], order_of_markers[15])
+#a list of tuples where each element represents the info for one bone, and 
+#the tuple contains the bone name, the marker of the head, and the marker of the tail
+list_of_bones_order = [('bone0', order_of_markers[1], order_of_markers[0]),
+        ('bone1', order_of_markers[1], order_of_markers[8]),
+		('bone2', order_of_markers[8], order_of_markers[12]),
+		('bone3', order_of_markers[12], order_of_markers[13]),
+		('bone4', order_of_markers[13], order_of_markers[14]),
+		('bone5', order_of_markers[14], order_of_markers[21]),
+		('bone6', order_of_markers[14], order_of_markers[19]),
+		('bone7', order_of_markers[19], order_of_markers[20]),
+		('bone8', order_of_markers[8], order_of_markers[9]),
+		('bone9', order_of_markers[9], order_of_markers[10]),
+		('bone10', order_of_markers[10], order_of_markers[11]),
+		('bone11', order_of_markers[11], order_of_markers[24]),
+		('bone12', order_of_markers[11], order_of_markers[22]),
+		('bone13', order_of_markers[22], order_of_markers[23]),
+		('bone14', order_of_markers[1], order_of_markers[5]),
+		('bone15', order_of_markers[5], order_of_markers[6]),
+		('bone16', order_of_markers[6], order_of_markers[7]),
+		('bone17', order_of_markers[1], order_of_markers[2]),
+		('bone18', order_of_markers[2], order_of_markers[3]),
+		('bone19', order_of_markers[3], order_of_markers[4]),
+		('bone20', order_of_markers[0], order_of_markers[16]),
+		('bone21', order_of_markers[16], order_of_markers[18]),
+		('bone22', order_of_markers[0], order_of_markers[15])]
+
 #the rightEar is not aligning with the rest of the data 
 #bone23 = add_child_bone('bone23', order_of_markers[15], order_of_markers[17])
 
@@ -222,48 +216,58 @@ bone22 = add_child_bone('bone22', order_of_markers[0], order_of_markers[15])
 
 #based on marker # from order_of_markers array add bones for hands:
 #left hand is 46-66 so add 46 to original 
-handL0 = add_child_bone('handL0', order_of_markers[0+46], order_of_markers[1+46])
-handL1 = add_child_bone('handL1', order_of_markers[1+46], order_of_markers[2+46])
-handL2 = add_child_bone('handL2', order_of_markers[2+46], order_of_markers[3+46])
-handL3 = add_child_bone('handL3', order_of_markers[3+46], order_of_markers[4+46])
-handL4 = add_child_bone('handL4', order_of_markers[0+46], order_of_markers[5+46])
-handL5 = add_child_bone('handL5', order_of_markers[5+46], order_of_markers[6+46])
-handL6 = add_child_bone('handL6', order_of_markers[6+46], order_of_markers[7+46])
-handL7 = add_child_bone('handL7', order_of_markers[7+46], order_of_markers[8+46])
-handL8 = add_child_bone('handL8', order_of_markers[0+46], order_of_markers[9+46])
-handL9 = add_child_bone('handL9', order_of_markers[9+46], order_of_markers[10+46])
-handL10 = add_child_bone('handL10', order_of_markers[10+46], order_of_markers[11+46])
-handL11 = add_child_bone('handL11', order_of_markers[11+46], order_of_markers[12+46])
-handL12 = add_child_bone('handL12', order_of_markers[0+46], order_of_markers[13+46])
-handL13 = add_child_bone('handL13', order_of_markers[13+46], order_of_markers[14+46])
-handL14 = add_child_bone('handL14', order_of_markers[14+46], order_of_markers[15+46])
-handL15 = add_child_bone('handL15', order_of_markers[15+46], order_of_markers[16+46])
-handL16 = add_child_bone('handL16', order_of_markers[0+46], order_of_markers[17+46])
-handL17 = add_child_bone('handL17', order_of_markers[17+46], order_of_markers[18+46])
-handL18 = add_child_bone('handL18', order_of_markers[18+46], order_of_markers[19+46])
-handL19 = add_child_bone('handL19', order_of_markers[19+46], order_of_markers[20+46])
+left_hand = [('handL0', order_of_markers[0+46], order_of_markers[1+46]),
+	('handL1', order_of_markers[1+46], order_of_markers[2+46]),
+	('handL2', order_of_markers[2+46], order_of_markers[3+46]),
+	('handL3', order_of_markers[3+46], order_of_markers[4+46]),
+	('handL4', order_of_markers[0+46], order_of_markers[5+46]),
+	('handL5', order_of_markers[5+46], order_of_markers[6+46]),
+	('handL6', order_of_markers[6+46], order_of_markers[7+46]),
+	('handL7', order_of_markers[7+46], order_of_markers[8+46]),
+	('handL8', order_of_markers[0+46], order_of_markers[9+46]),
+	('handL9', order_of_markers[9+46], order_of_markers[10+46]),
+	('handL10', order_of_markers[10+46], order_of_markers[11+46]),
+	('handL11', order_of_markers[11+46], order_of_markers[12+46]),
+	('handL12', order_of_markers[0+46], order_of_markers[13+46]),
+	('handL13', order_of_markers[13+46], order_of_markers[14+46]),
+	('handL14', order_of_markers[14+46], order_of_markers[15+46]),
+	('handL15', order_of_markers[15+46], order_of_markers[16+46]),
+	('handL16', order_of_markers[0+46], order_of_markers[17+46]),
+	('handL17', order_of_markers[17+46], order_of_markers[18+46]),
+	('handL18', order_of_markers[18+46], order_of_markers[19+46]),
+	('handL19', order_of_markers[19+46], order_of_markers[20+46])]
 
 #right hand is #25-45 so add 25 to original
-handR0 = add_child_bone('handR0', order_of_markers[0+25], order_of_markers[1+25])
-handR1 = add_child_bone('handR1', order_of_markers[1+25], order_of_markers[2+25])
-handR2 = add_child_bone('handR2', order_of_markers[2+25], order_of_markers[3+25])
-handR3 = add_child_bone('handR3', order_of_markers[3+25], order_of_markers[4+25])
-handR4 = add_child_bone('handR4', order_of_markers[0+25], order_of_markers[5+25])
-handR5 = add_child_bone('handR5', order_of_markers[5+25], order_of_markers[6+25])
-handR6 = add_child_bone('handR6', order_of_markers[6+25], order_of_markers[7+25])
-handR7 = add_child_bone('handR7', order_of_markers[7+25], order_of_markers[8+25])
-handR8 = add_child_bone('handR8', order_of_markers[0+25], order_of_markers[9+25])
-handR9 = add_child_bone('handR9', order_of_markers[9+25], order_of_markers[10+25])
-handR10 = add_child_bone('handR10', order_of_markers[10+25], order_of_markers[11+25])
-handR11 = add_child_bone('handR11', order_of_markers[11+25], order_of_markers[12+25])
-handR12 = add_child_bone('handR12', order_of_markers[0+25], order_of_markers[13+25])
-handR13 = add_child_bone('handR13', order_of_markers[13+25], order_of_markers[14+25])
-handR14 = add_child_bone('handR14', order_of_markers[14+25], order_of_markers[15+25])
-handR15 = add_child_bone('handR15', order_of_markers[15+25], order_of_markers[16+25])
-handR16 = add_child_bone('handR16', order_of_markers[0+25], order_of_markers[17+25])
-handR17 = add_child_bone('handR17', order_of_markers[17+25], order_of_markers[18+25])
-handR18 = add_child_bone('handR18', order_of_markers[18+25], order_of_markers[19+25])
-handR19 = add_child_bone('handR19', order_of_markers[19+25], order_of_markers[20+25])
+right_hand = [('handR0', order_of_markers[0+25], order_of_markers[1+25]),
+	('handR1', order_of_markers[1+25], order_of_markers[2+25]),
+	('handR2', order_of_markers[2+25], order_of_markers[3+25]),
+	('handR3', order_of_markers[3+25], order_of_markers[4+25]),
+	('handR4', order_of_markers[0+25], order_of_markers[5+25]),
+	('handR5', order_of_markers[5+25], order_of_markers[6+25]),
+	('handR6', order_of_markers[6+25], order_of_markers[7+25]),
+	('handR7', order_of_markers[7+25], order_of_markers[8+25]),
+	('handR8', order_of_markers[0+25], order_of_markers[9+25]),
+	('handR9', order_of_markers[9+25], order_of_markers[10+25]),
+	('handR10', order_of_markers[10+25], order_of_markers[11+25]),
+	('handR11', order_of_markers[11+25], order_of_markers[12+25]),
+	('handR12', order_of_markers[0+25], order_of_markers[13+25]),
+	('handR13', order_of_markers[13+25], order_of_markers[14+25]),
+	('handR14', order_of_markers[14+25], order_of_markers[15+25]),
+	('handR15', order_of_markers[15+25], order_of_markers[16+25]),
+	('handR16', order_of_markers[0+25], order_of_markers[17+25]),
+	('handR17', order_of_markers[17+25], order_of_markers[18+25]),
+	('handR18', order_of_markers[18+25], order_of_markers[19+25]),
+	('handR19', order_of_markers[19+25], order_of_markers[20+25])]
+
+#helper to create armature from list of tuples
+def tuple_to_armature(bones):
+    for bone_name, bone_head, bone_tail in bones:
+        add_child_bone(bone_name, bone_head, bone_tail)
+        
+#create all bones for skeleton body and hands
+tuple_to_armature(list_of_bones_order)
+tuple_to_armature(left_hand)
+tuple_to_armature(right_hand)
 
 #-----------------------------------------------------------------------------------
 #parent heads and tails to empties
@@ -288,73 +292,13 @@ def parent_to_empties(bone_name, head, tail):
     bpy.ops.object.posemode_toggle()
     
 #set parents of heads and tails for each bone 
-parent_to_empties('bone0', order_of_markers[0], order_of_markers[1])
-parent_to_empties('bone1', order_of_markers[1], order_of_markers[8])
-parent_to_empties('bone2', order_of_markers[8], order_of_markers[12])
-parent_to_empties('bone3', order_of_markers[12], order_of_markers[13])
-parent_to_empties('bone4', order_of_markers[13], order_of_markers[14])
-parent_to_empties('bone5', order_of_markers[14], order_of_markers[21])
-parent_to_empties('bone6', order_of_markers[14], order_of_markers[19])
-parent_to_empties('bone7', order_of_markers[19], order_of_markers[20])
-parent_to_empties('bone8', order_of_markers[8], order_of_markers[9])
-parent_to_empties('bone9', order_of_markers[9], order_of_markers[10])
-parent_to_empties('bone10', order_of_markers[10], order_of_markers[11])
-parent_to_empties('bone11', order_of_markers[11], order_of_markers[24])
-parent_to_empties('bone12', order_of_markers[11], order_of_markers[22])
-parent_to_empties('bone13', order_of_markers[22], order_of_markers[23])
-parent_to_empties('bone14', order_of_markers[1], order_of_markers[5])
-parent_to_empties('bone15', order_of_markers[5], order_of_markers[6])
-parent_to_empties('bone16', order_of_markers[6], order_of_markers[7])
-parent_to_empties('bone17', order_of_markers[1], order_of_markers[2])
-parent_to_empties('bone18', order_of_markers[2], order_of_markers[3])
-parent_to_empties('bone19', order_of_markers[3], order_of_markers[4])
-parent_to_empties('bone20', order_of_markers[0], order_of_markers[16])
-parent_to_empties('bone21', order_of_markers[16], order_of_markers[18])
-parent_to_empties('bone22', order_of_markers[0], order_of_markers[15])
-#parent_to_empties('bone23', order_of_markers[15], order_of_markers[17])
+def tuple_to_parented(bones):
+    for bone_name, bone_head, bone_tail in bones:
+        parent_to_empties(bone_name, bone_head, bone_tail)
 
-parent_to_empties('handL0', order_of_markers[0+46], order_of_markers[1+46])
-parent_to_empties('handL1', order_of_markers[1+46], order_of_markers[2+46])
-parent_to_empties('handL2', order_of_markers[2+46], order_of_markers[3+46])
-parent_to_empties('handL3', order_of_markers[3+46], order_of_markers[4+46])
-parent_to_empties('handL4', order_of_markers[0+46], order_of_markers[5+46])
-parent_to_empties('handL5', order_of_markers[5+46], order_of_markers[6+46])
-parent_to_empties('handL6', order_of_markers[6+46], order_of_markers[7+46])
-parent_to_empties('handL7', order_of_markers[7+46], order_of_markers[8+46])
-parent_to_empties('handL8', order_of_markers[0+46], order_of_markers[9+46])
-parent_to_empties('handL9', order_of_markers[9+46], order_of_markers[10+46])
-parent_to_empties('handL10', order_of_markers[10+46], order_of_markers[11+46])
-parent_to_empties('handL11', order_of_markers[11+46], order_of_markers[12+46])
-parent_to_empties('handL12', order_of_markers[0+46], order_of_markers[13+46])
-parent_to_empties('handL13', order_of_markers[13+46], order_of_markers[14+46])
-parent_to_empties('handL14', order_of_markers[14+46], order_of_markers[15+46])
-parent_to_empties('handL15', order_of_markers[15+46], order_of_markers[16+46])
-parent_to_empties('handL16', order_of_markers[0+46], order_of_markers[17+46])
-parent_to_empties('handL17', order_of_markers[17+46], order_of_markers[18+46])
-parent_to_empties('handL18', order_of_markers[18+46], order_of_markers[19+46])
-parent_to_empties('handL19', order_of_markers[19+46], order_of_markers[20+46])
-
-parent_to_empties('handR0', order_of_markers[0+25], order_of_markers[1+25])
-parent_to_empties('handR1', order_of_markers[1+25], order_of_markers[2+25])
-parent_to_empties('handR2', order_of_markers[2+25], order_of_markers[3+25])
-parent_to_empties('handR3', order_of_markers[3+25], order_of_markers[4+25])
-parent_to_empties('handR4', order_of_markers[0+25], order_of_markers[5+25])
-parent_to_empties('handR5', order_of_markers[5+25], order_of_markers[6+25])
-parent_to_empties('handR6', order_of_markers[6+25], order_of_markers[7+25])
-parent_to_empties('handR7', order_of_markers[7+25], order_of_markers[8+25])
-parent_to_empties('handR8', order_of_markers[0+25], order_of_markers[9+25])
-parent_to_empties('handR9', order_of_markers[9+25], order_of_markers[10+25])
-parent_to_empties('handR10', order_of_markers[10+25], order_of_markers[11+25])
-parent_to_empties('handR11', order_of_markers[11+25], order_of_markers[12+25])
-parent_to_empties('handR12', order_of_markers[0+25], order_of_markers[13+25])
-parent_to_empties('handR13', order_of_markers[13+25], order_of_markers[14+25])
-parent_to_empties('handR14', order_of_markers[14+25], order_of_markers[15+25])
-parent_to_empties('handR15', order_of_markers[15+25], order_of_markers[16+25])
-parent_to_empties('handR16', order_of_markers[0+25], order_of_markers[17+25])
-parent_to_empties('handR17', order_of_markers[17+25], order_of_markers[18+25])
-parent_to_empties('handR18', order_of_markers[18+25], order_of_markers[19+25])
-parent_to_empties('handR19', order_of_markers[19+25], order_of_markers[20+25])
-
+tuple_to_parented(list_of_bones_order)
+tuple_to_parented(left_hand)
+tuple_to_parented(right_hand)
 #-----------------------------------------------------------------------------------
 # Animate! 
 #find number of frames in animation
@@ -547,8 +491,6 @@ armature_data.select_set(state=True)
 
 #-----------------------------------------------------------------------------------
 #material assignment
-print("mesh here")
-print(mesh_obob)
 ob = mesh_obob
 
 # Get material
