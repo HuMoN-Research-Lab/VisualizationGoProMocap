@@ -1,3 +1,4 @@
+
 import numpy as np, bpy
 from mathutils import Matrix, Vector, Euler
 from math import *
@@ -14,7 +15,7 @@ import xml.dom.minidom
 num_frames_output = "all"
 num_frames_output = 3
 #Change: the path of the npy file 
-input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/npy data files/output_3d_skeleton_with_hands.npy"
+input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/npy data files/with_ball.npy"
 #Change: the path of the folder you want to export xml file and png frames of animation to
 output_frames_folder = "/Users/jackieallex/Downloads/markerless-reconstructed"
 
@@ -71,7 +72,7 @@ for col in markers_list:
         mt.name = name_arr[name]
     elif(name < 46):
         mt.name = "HandR"
-    else:
+    elif(name < 67):
         mt.name = "HandL"
     #add to order_of_markers to facilitate creating bones
     order_of_markers.append(mt)
@@ -164,27 +165,27 @@ armature = get_armature()
 #the tuple contains the bone name, the marker of the head, and the marker of the tail
 list_of_bones_order = [('bone0', order_of_markers[1], order_of_markers[0]),
         ('bone1', order_of_markers[1], order_of_markers[8]),
-		('bone2', order_of_markers[8], order_of_markers[12]),
-		('bone3', order_of_markers[12], order_of_markers[13]),
-		('bone4', order_of_markers[13], order_of_markers[14]),
-		('bone5', order_of_markers[14], order_of_markers[21]),
-		('bone6', order_of_markers[14], order_of_markers[19]),
-		('bone7', order_of_markers[19], order_of_markers[20]),
-		('bone8', order_of_markers[8], order_of_markers[9]),
-		('bone9', order_of_markers[9], order_of_markers[10]),
-		('bone10', order_of_markers[10], order_of_markers[11]),
-		('bone11', order_of_markers[11], order_of_markers[24]),
-		('bone12', order_of_markers[11], order_of_markers[22]),
-		('bone13', order_of_markers[22], order_of_markers[23]),
-		('bone14', order_of_markers[1], order_of_markers[5]),
-		('bone15', order_of_markers[5], order_of_markers[6]),
-		('bone16', order_of_markers[6], order_of_markers[7]),
-		('bone17', order_of_markers[1], order_of_markers[2]),
-		('bone18', order_of_markers[2], order_of_markers[3]),
-		('bone19', order_of_markers[3], order_of_markers[4]),
-		('bone20', order_of_markers[0], order_of_markers[16]),
-		('bone21', order_of_markers[16], order_of_markers[18]),
-		('bone22', order_of_markers[0], order_of_markers[15])]
+        ('bone2', order_of_markers[8], order_of_markers[12]),
+        ('bone3', order_of_markers[12], order_of_markers[13]),
+        ('bone4', order_of_markers[13], order_of_markers[14]),
+        ('bone5', order_of_markers[14], order_of_markers[21]),
+        ('bone6', order_of_markers[14], order_of_markers[19]),
+        ('bone7', order_of_markers[19], order_of_markers[20]),
+        ('bone8', order_of_markers[8], order_of_markers[9]),
+        ('bone9', order_of_markers[9], order_of_markers[10]),
+        ('bone10', order_of_markers[10], order_of_markers[11]),
+        ('bone11', order_of_markers[11], order_of_markers[24]),
+        ('bone12', order_of_markers[11], order_of_markers[22]),
+        ('bone13', order_of_markers[22], order_of_markers[23]),
+        ('bone14', order_of_markers[1], order_of_markers[5]),
+        ('bone15', order_of_markers[5], order_of_markers[6]),
+        ('bone16', order_of_markers[6], order_of_markers[7]),
+        ('bone17', order_of_markers[1], order_of_markers[2]),
+        ('bone18', order_of_markers[2], order_of_markers[3]),
+        ('bone19', order_of_markers[3], order_of_markers[4]),
+        ('bone20', order_of_markers[0], order_of_markers[16]),
+        ('bone21', order_of_markers[16], order_of_markers[18]),
+        ('bone22', order_of_markers[0], order_of_markers[15])]
 
 #the rightEar is not aligning with the rest of the data 
 #bone23 = add_child_bone('bone23', order_of_markers[15], order_of_markers[17])
@@ -217,47 +218,47 @@ list_of_bones_order = [('bone0', order_of_markers[1], order_of_markers[0]),
 #based on marker # from order_of_markers array add bones for hands:
 #left hand is 46-66 so add 46 to original 
 left_hand = [('handL0', order_of_markers[0+46], order_of_markers[1+46]),
-	('handL1', order_of_markers[1+46], order_of_markers[2+46]),
-	('handL2', order_of_markers[2+46], order_of_markers[3+46]),
-	('handL3', order_of_markers[3+46], order_of_markers[4+46]),
-	('handL4', order_of_markers[0+46], order_of_markers[5+46]),
-	('handL5', order_of_markers[5+46], order_of_markers[6+46]),
-	('handL6', order_of_markers[6+46], order_of_markers[7+46]),
-	('handL7', order_of_markers[7+46], order_of_markers[8+46]),
-	('handL8', order_of_markers[0+46], order_of_markers[9+46]),
-	('handL9', order_of_markers[9+46], order_of_markers[10+46]),
-	('handL10', order_of_markers[10+46], order_of_markers[11+46]),
-	('handL11', order_of_markers[11+46], order_of_markers[12+46]),
-	('handL12', order_of_markers[0+46], order_of_markers[13+46]),
-	('handL13', order_of_markers[13+46], order_of_markers[14+46]),
-	('handL14', order_of_markers[14+46], order_of_markers[15+46]),
-	('handL15', order_of_markers[15+46], order_of_markers[16+46]),
-	('handL16', order_of_markers[0+46], order_of_markers[17+46]),
-	('handL17', order_of_markers[17+46], order_of_markers[18+46]),
-	('handL18', order_of_markers[18+46], order_of_markers[19+46]),
-	('handL19', order_of_markers[19+46], order_of_markers[20+46])]
+    ('handL1', order_of_markers[1+46], order_of_markers[2+46]),
+    ('handL2', order_of_markers[2+46], order_of_markers[3+46]),
+    ('handL3', order_of_markers[3+46], order_of_markers[4+46]),
+    ('handL4', order_of_markers[0+46], order_of_markers[5+46]),
+    ('handL5', order_of_markers[5+46], order_of_markers[6+46]),
+    ('handL6', order_of_markers[6+46], order_of_markers[7+46]),
+    ('handL7', order_of_markers[7+46], order_of_markers[8+46]),
+    ('handL8', order_of_markers[0+46], order_of_markers[9+46]),
+    ('handL9', order_of_markers[9+46], order_of_markers[10+46]),
+    ('handL10', order_of_markers[10+46], order_of_markers[11+46]),
+    ('handL11', order_of_markers[11+46], order_of_markers[12+46]),
+    ('handL12', order_of_markers[0+46], order_of_markers[13+46]),
+    ('handL13', order_of_markers[13+46], order_of_markers[14+46]),
+    ('handL14', order_of_markers[14+46], order_of_markers[15+46]),
+    ('handL15', order_of_markers[15+46], order_of_markers[16+46]),
+    ('handL16', order_of_markers[0+46], order_of_markers[17+46]),
+    ('handL17', order_of_markers[17+46], order_of_markers[18+46]),
+    ('handL18', order_of_markers[18+46], order_of_markers[19+46]),
+    ('handL19', order_of_markers[19+46], order_of_markers[20+46])]
 
 #right hand is #25-45 so add 25 to original
 right_hand = [('handR0', order_of_markers[0+25], order_of_markers[1+25]),
-	('handR1', order_of_markers[1+25], order_of_markers[2+25]),
-	('handR2', order_of_markers[2+25], order_of_markers[3+25]),
-	('handR3', order_of_markers[3+25], order_of_markers[4+25]),
-	('handR4', order_of_markers[0+25], order_of_markers[5+25]),
-	('handR5', order_of_markers[5+25], order_of_markers[6+25]),
-	('handR6', order_of_markers[6+25], order_of_markers[7+25]),
-	('handR7', order_of_markers[7+25], order_of_markers[8+25]),
-	('handR8', order_of_markers[0+25], order_of_markers[9+25]),
-	('handR9', order_of_markers[9+25], order_of_markers[10+25]),
-	('handR10', order_of_markers[10+25], order_of_markers[11+25]),
-	('handR11', order_of_markers[11+25], order_of_markers[12+25]),
-	('handR12', order_of_markers[0+25], order_of_markers[13+25]),
-	('handR13', order_of_markers[13+25], order_of_markers[14+25]),
-	('handR14', order_of_markers[14+25], order_of_markers[15+25]),
-	('handR15', order_of_markers[15+25], order_of_markers[16+25]),
-	('handR16', order_of_markers[0+25], order_of_markers[17+25]),
-	('handR17', order_of_markers[17+25], order_of_markers[18+25]),
-	('handR18', order_of_markers[18+25], order_of_markers[19+25]),
-	('handR19', order_of_markers[19+25], order_of_markers[20+25])]
+    ('handR1', order_of_markers[1+25], order_of_markers[2+25]),
+    ('handR2', order_of_markers[2+25], order_of_markers[3+25]),
+    ('handR3', order_of_markers[3+25], order_of_markers[4+25]),
+    ('handR4', order_of_markers[0+25], order_of_markers[5+25]),
+    ('handR5', order_of_markers[5+25], order_of_markers[6+25]),
+    ('handR6', order_of_markers[6+25], order_of_markers[7+25]),
+    ('handR7', order_of_markers[7+25], order_of_markers[8+25]),
+    ('handR8', order_of_markers[0+25], order_of_markers[9+25]),
+    ('handR9', order_of_markers[9+25], order_of_markers[10+25]),
+    ('handR10', order_of_markers[10+25], order_of_markers[11+25]),
+    ('handR11', order_of_markers[11+25], order_of_markers[12+25]),
+    ('handR12', order_of_markers[0+25], order_of_markers[13+25]),
+    ('handR13', order_of_markers[13+25], order_of_markers[14+25]),
+    ('handR14', order_of_markers[14+25], order_of_markers[15+25]),
+    ('handR15', order_of_markers[15+25], order_of_markers[16+25]),
+    ('handR16', order_of_markers[0+25], order_of_markers[17+25]),
+    ('handR17', order_of_markers[17+25], order_of_markers[18+25]),
+    ('handR18', order_of_markers[18+25], order_of_markers[19+25]),
+    ('handR19', order_of_markers[19+25], order_of_markers[20+25])]
 
 #helper to create armature from list of tuples
 def tuple_to_armature(bones):
@@ -490,6 +491,78 @@ bpy.context.view_layer.objects.active = armature_data
 armature_data.select_set(state=True)
 
 #-----------------------------------------------------------------------------------
+#add in balls
+''' 
+iter = 0
+print(len(order_of_markers))
+length = len(order_of_markers)
+if length > 67 :
+    for index in range (67, length):
+        tracker = order_of_markers[index]
+        #Add a bone
+        bpy.ops.object.armature_add(enter_editmode=False, location=tracker.matrix_world.translation)
+        #resize the bone
+        bpy.ops.transform.resize(value=(0.5, 0.5, 0.5), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False, release_confirm=True)
+        new_armature = bpy.context.selected_objects[0]
+        #set the bone's parent to be the empty
+        new_armature.parent = tracker
+        #ensure that the bone is at the same location as the tracker
+        new_armature.matrix_world.translation = tracker.matrix_world.translation
+        #create a cube
+        bpy.ops.mesh.primitive_cube_add(size=0.1, enter_editmode=False, location=(0, 0, 0))
+        new_cube = bpy.context.selected_objects[0]
+        #set the cube's parent to be the bone
+        new_cube.parent = new_armature
+        #ensure the cube is also at the tracker's location
+        new_cube.matrix_world.translation = tracker.matrix_world.translation
+        iter += 1
+'''
+iter = 0
+length = len(order_of_markers)
+if length > 67 :
+    #Make armature variable
+    armature_data = bpy.data.objects[armature_object.name]
+    #Set armature active
+    bpy.context.view_layer.objects.active = armature_data
+    #Set armature selected
+    armature_data.select_set(state=True)
+    #Set edit mode
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    #Set bones in front and show axis
+    armature_data.show_in_front = True
+    #True to show axis orientation of bones and false to hide it
+    armature_data.data.show_axes = False
+    for index in range (67, length):
+        empty = order_of_markers[index]
+        #Create a new bone
+        new_bone = armature_data.data.edit_bones.new("ball" + str(iter))
+        #Set bone's size
+        new_bone.head = (0,0,0)
+        new_bone.tail = (0,0.5,0)
+        new_bone.matrix = empty.matrix_world
+        #set location of bone head
+        new_bone.head =  empty.location
+        #create a cube
+        bpy.ops.mesh.primitive_cube_add(size=0.1, enter_editmode=False, location=(0, 0, 0))
+        new_cube = bpy.context.selected_objects[0]
+        bpy.ops.object.select_all(action='DESELECT')
+        bpy.ops.object.select_name(name=str(new_cube.name), extend=False)
+        bpy.ops.object.select_name(name='Armature', extend=True)
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bones = bpy.context.object.data.bones
+        for bone in bones:
+            bone.select = False
+        bpy.context.object.data.bones[str(new_bone.name)].select = True
+        bpy.context.scene.update()
+        bpy.ops.object.parent_set(type='BONE')
+
+#-----------------------------------------------------------------------------------
+
+#Set armature active
+bpy.context.view_layer.objects.active = armature_data
+#Set armature selected
+armature_data.select_set(state=True)
+
 #material assignment
 ob = mesh_obob
 
