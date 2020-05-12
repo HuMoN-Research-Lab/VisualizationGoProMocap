@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Data>
-	<timestamp>2020-05-11 16:25:06.514799</timestamp>
+	<timestamp>2020-05-12 13:07:51.879779</timestamp>
 	<frames>
 		<frame1>
 			<markers>
@@ -205,15 +205,15 @@
 				<HandL.020>
 					<Location>&lt;Vector (-2.4952, 5.3642, 272.3686)&gt;</Location>
 				</HandL.020>
-				<Empty>
+				<Ball.001>
 					<Location>&lt;Vector (6.2789, 82.9458, 314.5212)&gt;</Location>
-				</Empty>
-				<Empty.001>
+				</Ball.001>
+				<Ball.002>
 					<Location>&lt;Vector (10.0544, 84.2235, 328.7057)&gt;</Location>
-				</Empty.001>
-				<Empty.002>
+				</Ball.002>
+				<Ball>
 					<Location>&lt;Vector (2.5826, 79.4018, 300.6248)&gt;</Location>
-				</Empty.002>
+				</Ball>
 			</markers>
 			<armature>
 				<bone0>
@@ -469,17 +469,17 @@
 					<Rotation>&lt;Quaternion (w=0.9997, x=-0.0013, y=0.0000, z=0.0244)&gt;</Rotation>
 				</handR19>
 				<ball0>
-					<Location>&lt;Vector (0.0000, 0.0000, 0.0000)&gt;</Location>
+					<Location>&lt;Vector (-0.0018, -0.0547, -0.0251)&gt;</Location>
 					<Rotation>&lt;Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)&gt;</Rotation>
 				</ball0>
-				<ball0.001>
-					<Location>&lt;Vector (0.0000, 0.0000, 0.0000)&gt;</Location>
+				<ball1>
+					<Location>&lt;Vector (0.0026, 0.0168, 0.0135)&gt;</Location>
 					<Rotation>&lt;Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)&gt;</Rotation>
-				</ball0.001>
-				<ball0.002>
-					<Location>&lt;Vector (0.0000, 0.0000, 0.0000)&gt;</Location>
+				</ball1>
+				<ball2>
+					<Location>&lt;Vector (-0.0028, -0.0190, -0.0066)&gt;</Location>
 					<Rotation>&lt;Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)&gt;</Rotation>
-				</ball0.002>
+				</ball2>
 			</armature>
 		</frame1>
 		<frame2>
@@ -685,15 +685,15 @@
 				<HandL.020>
 					<Location>&lt;Vector (-2.4952, 5.3642, 272.3686)&gt;</Location>
 				</HandL.020>
-				<Empty>
+				<Ball.001>
 					<Location>&lt;Vector (6.2789, 82.9458, 314.5212)&gt;</Location>
-				</Empty>
-				<Empty.001>
+				</Ball.001>
+				<Ball.002>
 					<Location>&lt;Vector (10.0544, 84.2235, 328.7057)&gt;</Location>
-				</Empty.001>
-				<Empty.002>
+				</Ball.002>
+				<Ball>
 					<Location>&lt;Vector (2.5826, 79.4018, 300.6248)&gt;</Location>
-				</Empty.002>
+				</Ball>
 			</markers>
 			<armature>
 				<bone0>
@@ -949,17 +949,17 @@
 					<Rotation>&lt;Quaternion (w=0.9897, x=-0.1425, y=-0.0052, z=0.0116)&gt;</Rotation>
 				</handR19>
 				<ball0>
-					<Location>&lt;Vector (0.0000, 0.0000, 0.0000)&gt;</Location>
+					<Location>&lt;Vector (-0.0005, -0.0504, -0.0129)&gt;</Location>
 					<Rotation>&lt;Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)&gt;</Rotation>
 				</ball0>
-				<ball0.001>
-					<Location>&lt;Vector (0.0000, 0.0000, 0.0000)&gt;</Location>
+				<ball1>
+					<Location>&lt;Vector (0.0023, 0.0066, 0.0181)&gt;</Location>
 					<Rotation>&lt;Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)&gt;</Rotation>
-				</ball0.001>
-				<ball0.002>
-					<Location>&lt;Vector (0.0000, 0.0000, 0.0000)&gt;</Location>
+				</ball1>
+				<ball2>
+					<Location>&lt;Vector (-0.0037, -0.0136, -0.0101)&gt;</Location>
 					<Rotation>&lt;Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)&gt;</Rotation>
-				</ball0.002>
+				</ball2>
 			</armature>
 		</frame2>
 		<frame3>
@@ -1165,15 +1165,15 @@
 				<HandL.020>
 					<Location>&lt;Vector (-2.4952, 5.3642, 272.3686)&gt;</Location>
 				</HandL.020>
-				<Empty>
+				<Ball.001>
 					<Location>&lt;Vector (6.2789, 82.9458, 314.5212)&gt;</Location>
-				</Empty>
-				<Empty.001>
+				</Ball.001>
+				<Ball.002>
 					<Location>&lt;Vector (10.0544, 84.2235, 328.7057)&gt;</Location>
-				</Empty.001>
-				<Empty.002>
+				</Ball.002>
+				<Ball>
 					<Location>&lt;Vector (2.5826, 79.4018, 300.6248)&gt;</Location>
-				</Empty.002>
+				</Ball>
 			</markers>
 			<armature>
 				<bone0>
@@ -1429,17 +1429,17 @@
 					<Rotation>&lt;Quaternion (w=0.9862, x=-0.1641, y=-0.0038, z=0.0213)&gt;</Rotation>
 				</handR19>
 				<ball0>
-					<Location>&lt;Vector (0.0000, 0.0000, 0.0000)&gt;</Location>
+					<Location>&lt;Vector (-0.0002, -0.0488, -0.0126)&gt;</Location>
 					<Rotation>&lt;Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)&gt;</Rotation>
 				</ball0>
-				<ball0.001>
-					<Location>&lt;Vector (0.0000, 0.0000, 0.0000)&gt;</Location>
+				<ball1>
+					<Location>&lt;Vector (0.0050, 0.0157, 0.0222)&gt;</Location>
 					<Rotation>&lt;Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)&gt;</Rotation>
-				</ball0.001>
-				<ball0.002>
-					<Location>&lt;Vector (0.0000, 0.0000, 0.0000)&gt;</Location>
+				</ball1>
+				<ball2>
+					<Location>&lt;Vector (-0.0023, -0.0123, -0.0229)&gt;</Location>
 					<Rotation>&lt;Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)&gt;</Rotation>
-				</ball0.002>
+				</ball2>
 			</armature>
 		</frame3>
 	</frames>

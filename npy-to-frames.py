@@ -74,6 +74,8 @@ for col in markers_list:
         mt.name = "HandR"
     elif(name < 67):
         mt.name = "HandL"
+    else:
+        mt.name = "Ball"
     #add to order_of_markers to facilitate creating bones
     order_of_markers.append(mt)
     #increment index of name of empty in list
@@ -334,17 +336,6 @@ def my_handler(scene):
         #if(empty.name != "RElbow"):
         empty.location = coord
         current_marker += 1 
-       #set keyframes for bones
-        if(current_marker == (len(markers_list) - 1)):
-            frames_seen += 1
-            for bone in bpy.data.objects['Armature'].pose.bones:
-                bpy.ops.pose.visual_transform_apply()
-                bone.keyframe_insert(data_path = 'location')
-                if bone.rotation_mode == "QUATERNION":
-                    bone.keyframe_insert(data_path = 'rotation_quaternion')
-                else:
-                    bone.keyframe_insert(data_path = 'rotation_euler')
-                #bone.keyframe_insert(data_path = 'scale')
                 
 #-----------------------------------------------------------------------------------
 #script to create a mesh of the armature 
@@ -492,70 +483,54 @@ armature_data.select_set(state=True)
 
 #-----------------------------------------------------------------------------------
 #add in balls
-''' 
-iter = 0
-print(len(order_of_markers))
-length = len(order_of_markers)
-if length > 67 :
-    for index in range (67, length):
-        tracker = order_of_markers[index]
-        #Add a bone
-        bpy.ops.object.armature_add(enter_editmode=False, location=tracker.matrix_world.translation)
-        #resize the bone
-        bpy.ops.transform.resize(value=(0.5, 0.5, 0.5), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False, release_confirm=True)
-        new_armature = bpy.context.selected_objects[0]
-        #set the bone's parent to be the empty
-        new_armature.parent = tracker
-        #ensure that the bone is at the same location as the tracker
-        new_armature.matrix_world.translation = tracker.matrix_world.translation
-        #create a cube
-        bpy.ops.mesh.primitive_cube_add(size=0.1, enter_editmode=False, location=(0, 0, 0))
-        new_cube = bpy.context.selected_objects[0]
-        #set the cube's parent to be the bone
-        new_cube.parent = new_armature
-        #ensure the cube is also at the tracker's location
-        new_cube.matrix_world.translation = tracker.matrix_world.translation
-        iter += 1
-'''
 iter = 0
 length = len(order_of_markers)
 if length > 67 :
-    #Make armature variable
-    armature_data = bpy.data.objects[armature_object.name]
-    #Set armature active
-    bpy.context.view_layer.objects.active = armature_data
-    #Set armature selected
-    armature_data.select_set(state=True)
     #Set edit mode
-    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    bpy.ops.object.mode_set(mode='EDIT')
     #Set bones in front and show axis
     armature_data.show_in_front = True
     #True to show axis orientation of bones and false to hide it
     armature_data.data.show_axes = False
     for index in range (67, length):
+        #Set edit mode
+        bpy.ops.object.mode_set(mode='EDIT')
         empty = order_of_markers[index]
+        #Set armature active
+        bpy.context.view_layer.objects.active = armature_data
+        #Set armature selected
+        armature_data.select_set(state=True)
+        bpy.ops.object.mode_set(mode='EDIT')
         #Create a new bone
         new_bone = armature_data.data.edit_bones.new("ball" + str(iter))
+        new_armature = bpy.context.selected_objects[0]
         #Set bone's size
         new_bone.head = (0,0,0)
         new_bone.tail = (0,0.5,0)
         new_bone.matrix = empty.matrix_world
         #set location of bone head
         new_bone.head =  empty.location
-        #create a cube
-        bpy.ops.mesh.primitive_cube_add(size=0.1, enter_editmode=False, location=(0, 0, 0))
-        new_cube = bpy.context.selected_objects[0]
-        bpy.ops.object.select_all(action='DESELECT')
-        bpy.ops.object.select_name(name=str(new_cube.name), extend=False)
-        bpy.ops.object.select_name(name='Armature', extend=True)
-        bpy.ops.object.mode_set(mode='OBJECT')
-        bones = bpy.context.object.data.bones
-        for bone in bones:
-            bone.select = False
-        bpy.context.object.data.bones[str(new_bone.name)].select = True
-        bpy.context.scene.update()
-        bpy.ops.object.parent_set(type='BONE')
-
+        #enter pose mode
+        bpy.ops.object.posemode_toggle()
+        marker = armature.data.bones["ball" + str(iter)]
+        #Set marker selected
+        marker.select = True
+        #Set marker active
+        bpy.context.object.data.bones.active = marker
+        bone = bpy.context.object.pose.bones["ball" + str(iter)]
+        #Copy Location Pose constraint: makes the bone's head follow the given empty
+        bpy.ops.pose.constraint_add(type='COPY_LOCATION')
+        bone.constraints["Copy Location"].target = empty
+        bpy.ops.object.posemode_toggle()
+        bpy.ops.mesh.primitive_uv_sphere_add(enter_editmode=False, location=empty.location)
+        sphere = bpy.context.selected_objects[0]
+        sphere.matrix_world.translation = empty.matrix_world.translation
+        sphere.scale[0] = 5
+        sphere.scale[1] = 5
+        sphere.scale[2] = 5
+        sphere.parent = empty
+        iter += 1
+            
 #-----------------------------------------------------------------------------------
 
 #Set armature active
