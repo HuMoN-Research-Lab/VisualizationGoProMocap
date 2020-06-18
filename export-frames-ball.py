@@ -15,7 +15,7 @@ import xml.dom.minidom
 num_frames_output = "all"
 num_frames_output = 1
 #Change: the path of the npy file 
-input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/npy data files/with_ball.npy"
+input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/input_npy_data_files/JSM3.npy"
 #Change: the path of the folder you want to export xml file and png frames of animation to
 output_frames_folder = "/Users/jackieallex/Downloads/markerless-reconstructed"
 
@@ -499,9 +499,10 @@ if length > 67:
         sphere = bpy.context.selected_objects[0]
         sphere.parent = empty
         sphere.matrix_world.translation = empty.matrix_world.translation
-        sphere.scale[0] = 2
-        sphere.scale[1] = 2
-        sphere.scale[2] = 2
+        #size of sphere
+        sphere.scale[0] = 0.5
+        sphere.scale[1] = 0.5
+        sphere.scale[2] = 0.5
         mat = bpy.data.materials.get("Material" + color[iter])
         if sphere.data.materials:
             # assign to 1st material slot
