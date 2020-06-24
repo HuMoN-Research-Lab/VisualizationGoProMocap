@@ -14,8 +14,9 @@ import xml.dom.minidom
 #set to "all" to output all frames
 num_frames_output = "all"
 num_frames_output = 1
+#num_frames_output = 4064
 #Change: the path of the npy file 
-input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/input_npy_data_files/JSM3.npy"
+input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/input_npy_data_files/JSM3_6000.npy"
 #Change: the path of the folder you want to export xml file and png frames of animation to
 output_frames_folder = "/Users/jackieallex/Downloads/markerless-reconstructed"
 
@@ -359,8 +360,8 @@ def armToMesh( arm ):
 
 #Make vertices and faces 
 def boneGeometry( l1, l2, x, z, baseSize, l1Size, l2Size, base ):
-    x1 = x * baseSize * l1Size 
-    z1 = z * baseSize * l1Size
+    x1 = x  * baseSize * l1Size * 0.5
+    z1 = z  * baseSize * l2Size * 0.5
     
     x2 = Vector( (0, 0, 0) )
     z2 = Vector( (0, 0, 0) )
@@ -503,6 +504,9 @@ if length > 67:
         sphere.scale[0] = 0.5
         sphere.scale[1] = 0.5
         sphere.scale[2] = 0.5
+        bpy.ops.object.mode_set(mode='OBJECT')
+        for f in sphere.data.polygons:
+            f.use_smooth = True
         mat = bpy.data.materials.get("Material" + color[iter])
         if sphere.data.materials:
             # assign to 1st material slot
@@ -511,6 +515,28 @@ if length > 67:
             # no slots
             sphere.data.materials.append(mat)
         iter += 1
+        
+
+#add visible markers mesh
+'''
+for index in range(0, 67):
+    empty = order_of_markers[index]
+    bpy.ops.mesh.primitive_uv_sphere_add(enter_editmode=False, location=(0, 0, 0))
+    sphere = bpy.context.selected_objects[0]
+    sphere.parent = empty
+    sphere.matrix_world.translation = empty.matrix_world.translation
+    #size of sphere
+    sphere.scale[0] = 0.1
+    sphere.scale[1] = 0.1
+    sphere.scale[2] = 0.1
+    mat = bpy.data.materials.get("Material-marker")
+    if sphere.data.materials:
+        # assign to 1st material slot
+        sphere.data.materials[0] = mat
+    else:
+        # no slots
+        sphere.data.materials.append(mat)
+''' 
             
 #-----------------------------------------------------------------------------------
 
