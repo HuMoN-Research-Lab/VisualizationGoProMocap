@@ -1,6 +1,9 @@
 # VisualizationGoProMocap
 Go pro motion capture data visualized through 3D animation using Blender and Python 
 
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/44556715/85582967-dbfe6800-b60b-11ea-92c1-6a3502a61e66.gif">
+</p>
 
 <p align="center">
  <img src="https://user-images.githubusercontent.com/44556715/80505213-08ff0900-8942-11ea-87af-654d58b9355d.gif">
