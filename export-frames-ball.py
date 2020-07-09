@@ -16,9 +16,9 @@ num_frames_output = "all"
 num_frames_output = 1
 #num_frames_output = 4064
 #Change: the path of the npy file 
-input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/input_npy_data_files/JSM3_6000.npy"
+input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/input_npy_data_files/JSM3_6000frame_Filtered.npy"
 #Change: the path of the folder you want to export xml file and png frames of animation to
-output_frames_folder = "/Users/jackieallex/Downloads/markerless-reconstructed"
+output_frames_folder = "/Users/jackieallex/Downloads/markerless-reconstructed/output_xml"
 
 # the array is saved in the file 
 arr = np.load(input_npy) 
@@ -600,7 +600,7 @@ if num_frames_output is "all":
 else: 
     num_frames_output += 1
 #iterate through all frames
-for frame in range(scene.frame_start, num_frames_output):
+for frame in range(0, num_frames_output):
     #specify file path to the folder you want to export to
     scene.render.filepath = output_frames_folder + "/frames/" + str(frame)
     scene.frame_set(frame)
