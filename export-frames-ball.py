@@ -626,7 +626,7 @@ for frame in range(0, num_frames_output):
     for bone in bpy.data.objects['Armature'].pose.bones:
         bone_node = SubElement(child2, bone.name)
         create_node(bone_node, "Location", str(bone.location))
-        create_node(bone_node, "Rotation", str(bone.rotation_quaternion))
+        create_node(bone_node, "Rotation", str(bone.rotation_quaternion)) 
 
 #-----------------------------------------------------------------------------------
 # Write and close XML file
