@@ -2,6 +2,10 @@
 Go pro motion capture data visualized through 3D animation using Blender and Python 
 
 <p align="center">
+ <img src="https://user-images.githubusercontent.com/44556715/88416228-daac9080-cdad-11ea-8c7f-54f5d6586dea.gif">
+</p>
+
+<p align="center">
  <img src="https://user-images.githubusercontent.com/44556715/85582967-dbfe6800-b60b-11ea-92c1-6a3502a61e66.gif">
 </p>
 
