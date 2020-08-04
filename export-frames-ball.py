@@ -14,11 +14,12 @@ import xml.dom.minidom
 #set to "all" to output all frames
 num_frames_output = "all"
 num_frames_output = 1
-#num_frames_output = 4064
+path = r"/Users/jackieallex/Downloads/markerless-reconstructed/"
 #Change: the path of the npy file 
-input_npy = "/Users/jackieallex/Downloads/markerless-reconstructed/input_npy_data_files/JSM3_6000frame_Filtered.npy"
+input_npy = path + "/input_npy_data_files/JSM3_6000frame_Filtered.npy"
 #Change: the path of the folder you want to export xml file and png frames of animation to
-output_frames_folder = "/Users/jackieallex/Downloads/markerless-reconstructed/output_xml"
+output_frames_folder = path + "output_frames"
+output_xml_folder = path + "output_xml"
 
 # the array is saved in the file 
 arr = np.load(input_npy) 
@@ -87,8 +88,6 @@ for col in markers_list:
     mt.location = coord
     #set the display size of the empty
     mt.empty_display_size = 0.2
-    #sanity check
-    #print(coord)
     
 #-----------------------------------------------------------------------------------
 #Create armature of skeleton if it is the 1st frame
@@ -491,6 +490,7 @@ armature_data.select_set(state=True)
 iter = 0
 color = [".003", ".004", ".002"]
 length = len(order_of_markers)
+ball_array = []
 if length > 67:
     #Set edit mode
     bpy.ops.object.mode_set(mode='EDIT')
@@ -519,6 +519,7 @@ if length > 67:
             # no slots
             sphere.data.materials.append(mat)
         iter += 1
+        ball_array.append(sphere)
         
 
 #add visible markers mesh
@@ -606,7 +607,7 @@ else:
 #iterate through all frames
 for frame in range(0, num_frames_output):
     #specify file path to the folder you want to export to
-    scene.render.filepath = output_frames_folder + "/frames/" + str(frame)
+    scene.render.filepath = output_frames_folder + "/"+ str(frame)
     scene.frame_set(frame)
     #render frame
     bpy.ops.render.render(write_still=True)
@@ -633,14 +634,14 @@ for frame in range(0, num_frames_output):
 print("Writing XML...")
 #raw XML file
 mydata = ET.tostring(data, encoding="unicode")
-myfile = open(output_frames_folder + "/output_data_raw.xml", "w")
+myfile = open(output_xml_folder + "/output_data_raw.xml", "w")
 myfile.write(mydata)
 myfile.close() 
 
 #formatted human-readable XML file
 dom = xml.dom.minidom.parseString(mydata)
 pretty_xml_as_string = dom.toprettyxml()
-myfile2 = open(output_frames_folder + "/output_data_pretty.xml", "w")
+myfile2 = open(output_xml_folder + "/output_data_pretty.xml", "w")
 myfile2.write(pretty_xml_as_string)
 myfile2.close()
 
