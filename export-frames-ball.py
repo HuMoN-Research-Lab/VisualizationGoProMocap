@@ -1,4 +1,3 @@
-
 import numpy as np, bpy
 from mathutils import Matrix, Vector, Euler
 from math import *
@@ -582,7 +581,6 @@ register()
 #-----------------------------------------------------------------------------------
 '''
 Currently not correct view
-
 #Adjust camera position / rotation
 bpy.ops.object.posemode_toggle()
 camera = bpy.data.objects["Camera"]
@@ -592,7 +590,6 @@ camera.rotation_quaternion[0] = 0
 camera.rotation_quaternion[1] = 20
 camera.rotation_quaternion[2] = -20
 camera.rotation_quaternion[3] = 0
-
 '''
 
 #-----------------------------------------------------------------------------------
