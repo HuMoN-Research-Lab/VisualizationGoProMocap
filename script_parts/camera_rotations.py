@@ -1,4 +1,4 @@
-import pickle, numpy, bpy
+import pickle, numpy as np, bpy
 from mathutils import Matrix, Vector, Euler
 
 infile = open(r"/Users/jackieallex/Downloads/markerless-reconstructed/input_pickle/camera_pos.pkl",'rb')
@@ -9,23 +9,59 @@ infileCoords = open(r"/Users/jackieallex/Downloads/markerless-reconstructed/inpu
 new_dict2 = pickle.load(infileCoords)
 infileCoords.close()
 
-print(new_dict2)
+print(new_dict.get('Calibration/1'))
 
-for x in new_dict2:
-    # parse string float value into floats, create Vector, set empty position to Vector
-    coord = Vector((float(x[0]), float(x[1]), float(x[2])))
-    bpy.ops.object.add(type='EMPTY', location=coord)  
-    mt = bpy.context.active_object  
-    #link empty to scene
-    bpy.context.scene.collection.objects.link( mt )
-    #set empty's location 
-    mt.location = coord
-    #set the display size of the empty
-    mt.empty_display_size = 0.2
+def charucoMarkers():
+    for x in new_dict2:
+        # parse string float value into floats, create Vector, set empty position to Vector
+        coord = Vector((float(x[0]), float(x[1]), float(x[2])))
+        bpy.ops.object.add(type='EMPTY', location=coord)  
+        mt = bpy.context.active_object  
+        #link empty to scene
+        bpy.context.scene.collection.objects.link( mt )
+        #set empty's location 
+        mt.location = coord
+        #set the display size of the empty
+        mt.empty_display_size = 0.2
+ 
+def rot2eul(R):
+    beta = -np.arcsin(R[2,0])
+    alpha = np.arctan2(R[2,1]/np.cos(beta),R[2,2]/np.cos(beta))
+    gamma = np.arctan2(R[1,0]/np.cos(beta),R[0,0]/np.cos(beta))
+    return np.array((alpha, beta, gamma))
+
+def rotateCamera(calibration):
+    x = new_dict.get(calibration)
+    coord = Vector((float(x[0][3]), float(x[1][3]), float(x[2][3])))
+    bpy.ops.object.add(type='CAMERA', location=coord)
     
+    rotation_euler = rot2eul(x)
+    bpy.context.object.rotation_euler[0] = rotation_euler[0]
+    bpy.context.object.rotation_euler[1] = rotation_euler[1]
+    bpy.context.object.rotation_euler[2] = rotation_euler[2]
+
+charucoMarkers()
+        
+rotateCamera('Calibration/1')
+rotateCamera('Calibration/2')
+rotateCamera('Calibration/3')
+rotateCamera('Calibration/4')
 
 
+'''
+bpy.ops.object.add(type='CAMERA', location=location)
+    ob = bpy.context.object
+    ob.name = 'CamFrom3x4PObj'
+    cam = ob.data
+    cam.name = 'CamFrom3x4P'
 
+    # Lens
+    cam.type = 'PERSP'
+    cam.lens = f_in_mm 
+    cam.lens_unit = 'MILLIMETERS'
+    cam.sensor_width  = sensor_width_in_mm
+
+'''
 
 '''
 
