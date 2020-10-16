@@ -23,29 +23,123 @@ def charucoMarkers():
         mt.location = coord
         #set the display size of the empty
         mt.empty_display_size = 0.2
+    return mt
  
 def rot2eul(R):
     beta = -np.arcsin(R[2,0])
     alpha = np.arctan2(R[2,1]/np.cos(beta),R[2,2]/np.cos(beta))
     gamma = np.arctan2(R[1,0]/np.cos(beta),R[0,0]/np.cos(beta))
-    return np.array((alpha, beta, gamma))
+    x = np.array((alpha, beta, gamma))
+    return x
+
+
+#import video as plane
+bpy.ops.import_image.to_plane(files=[{"name":"GH020046.MP4", "name":"GH020046.MP4"}], directory="/Users/jackieallex/Downloads/markerless-reconstructed/Videos /")
+for obj in bpy.context.scene.objects:
+        if obj.name.startswith("GH020046"):
+            planeE = obj
+            
+planes = []
+planes.append(planeE)
+
+bpy.context.view_layer.objects.active = planes[0]
+planes[0].select_set(state=True)
+bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+bpy.ops.object.editmode_toggle()
+bpy.ops.transform.rotate(value=-3.1386, orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False, release_confirm=True)
+bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
+
+
+#planes: set at origin, set camera facing down with far plane exactly on the ground plane such that it overlaps video perfectly, then parent and then move and rotate camera
 
 def rotateCamera(calibration):
     x = new_dict.get(calibration)
     coord = Vector((float(x[0][3]), float(x[1][3]), float(x[2][3])))
     bpy.ops.object.add(type='CAMERA', location=coord)
     
-    rotation_euler = rot2eul(x)
-    bpy.context.object.rotation_euler[0] = rotation_euler[0]
-    bpy.context.object.rotation_euler[1] = rotation_euler[1]
-    bpy.context.object.rotation_euler[2] = rotation_euler[2]
+    bpy.ops.transform.resize(value=(7, 7, 7), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False, release_confirm=True)
+    
+    
+    rotation_euler = rot2eul(x.T)
+    bpy.context.object.rotation_euler = rotation_euler
+    bpy.context.object.rotation_mode = 'ZYX'
 
-charucoMarkers()
+    
+    planes[0].rotation_mode = 'ZYX'
+    planes[0].location = coord 
+    planes[0].rotation_euler = rotation_euler
+    
+    return coord
+
+    
+#Place empties at charuco marker positions 
+last_marker = charucoMarkers()
         
+
 rotateCamera('Calibration/1')
 rotateCamera('Calibration/2')
 rotateCamera('Calibration/3')
-rotateCamera('Calibration/4')
+last_coord = rotateCamera('Calibration/4')
+
+
+bpy.context.view_layer.objects.active = planes[0]
+planes[0].select_set(state=True)
+bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+mesh = bpy.data.meshes.new("ray")  # add the new mesh
+obj = bpy.data.objects.new("ray_object", mesh)
+col = bpy.data.collections.get("Collection")
+#link to Collection
+col.objects.link(obj)
+#set as active object
+bpy.context.view_layer.objects.active = obj
+
+obj.select_set(state=True)
+bpy.context.view_layer.objects.active = obj
+#Create mesh outline of skeleton parts
+ # verts made with XYZ coords
+print(last_coord)
+print(last_marker.location)
+verts = []
+faces = []
+
+verts.append(last_coord)
+verts.append(last_marker.location)
+
+edges = [(0, 1)]
+
+#Create the mesh with the vertices and faces
+obj.data.from_pydata(verts, edges, faces)
+bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+bpy.context.view_layer.objects.active = obj
+obj.select_set(state=True)
+#Set origin of the plane to its median center
+bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
+
+#Add screw modifier to make it thicker and visible in render
+bpy.ops.object.modifier_add(type='SCREW')
+bpy.context.object.modifiers["Screw"].angle = 0
+bpy.context.object.modifiers["Screw"].steps = 2
+bpy.context.object.modifiers["Screw"].render_steps = 2
+bpy.context.object.modifiers["Screw"].screw_offset = 0.1
+bpy.context.object.modifiers["Screw"].use_merge_vertices = True
+
+# Get material
+mat = bpy.data.materials.get("Ray_red")
+if mat is None:
+    # create material
+    print("mat was none")
+    mat = bpy.data.materials.new(name="Ray_red")
+
+# Assign it to object
+if obj.data.materials:
+    # assign to 1st material slot
+    obj.data.materials[0] = mat
+else:
+    # no slots
+    obj.data.materials.append(mat)
+
+#--------------------------------------------------------------------------
 
 
 '''
