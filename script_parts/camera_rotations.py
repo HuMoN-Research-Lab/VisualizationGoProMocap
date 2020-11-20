@@ -1,7 +1,7 @@
 import pickle, numpy as np, bpy
 from mathutils import Matrix, Vector, Euler
 
-infile = open(r"/Users/jackieallex/Downloads/markerless-reconstructed/input_pickle/camera_pos.pkl",'rb')
+infile = open(r"/Users/jackieallex/Downloads/markerless-reconstructed/input_pickle/camera_pos2.pkl",'rb')
 new_dict = pickle.load(infile)
 infile.close()
 
@@ -9,7 +9,10 @@ infileCoords = open(r"/Users/jackieallex/Downloads/markerless-reconstructed/inpu
 new_dict2 = pickle.load(infileCoords)
 infileCoords.close()
 
-print(new_dict.get('Calibration/1'))
+calibration_names = ['Calibration/1', 'Calibration/2', 'Calibration/3', 'Calibration/4']
+
+
+print(new_dict.get(calibration_names[0]))
 
 def charucoMarkers():
     for x in new_dict2:
@@ -25,6 +28,7 @@ def charucoMarkers():
         mt.empty_display_size = 0.2
     return mt
  
+"""
 def rot2eul(R):
     beta = -np.arcsin(R[2,0])
     alpha = np.arctan2(R[2,1]/np.cos(beta),R[2,2]/np.cos(beta))
@@ -71,12 +75,13 @@ def rotateCamera(calibration):
     planes[0].rotation_euler = rotation_euler
     
     return coord
+"""
 
-    
 #Place empties at charuco marker positions 
 last_marker = charucoMarkers()
-        
 
+     
+"""
 rotateCamera('Calibration/1')
 rotateCamera('Calibration/2')
 rotateCamera('Calibration/3')
@@ -142,26 +147,6 @@ else:
 #--------------------------------------------------------------------------
 
 
-'''
-bpy.ops.object.add(type='CAMERA', location=location)
-    ob = bpy.context.object
-    ob.name = 'CamFrom3x4PObj'
-    cam = ob.data
-    cam.name = 'CamFrom3x4P'
-
-    # Lens
-    cam.type = 'PERSP'
-    cam.lens = f_in_mm 
-    cam.lens_unit = 'MILLIMETERS'
-    cam.sensor_width  = sensor_width_in_mm
-
-'''
-
-'''
-
-print(new_dict.get('Calibration/1'))
-
-
 #converting from matrix to properly rotated blender camera found here: https://blender.stackexchange.com/questions/40650/blender-camera-from-3x4-matrix?rq=1
 
     # Input: P 3x4 numpy matrix
@@ -180,16 +165,16 @@ def KRT_from_P(P):
 
     # from http://ksimek.github.io/2012/08/14/decompose/
     # make the diagonal of K positive
-    sg = numpy.diag(numpy.sign(numpy.diag(K)))
+    sg = np.diag(np.sign(np.diag(K)))
 
-    K = K * sg
-    R = sg * R
+    K = K @ sg
+    R = sg @ R
     # det(R) negative, just invert; the proj equation remains same:
-    if (numpy.linalg.det(R) < 0):
+    if (np.linalg.det(R) < 0):
        R = -R
     # C = -H\P[:,-1]
-    C = numpy.linalg.lstsq(-H, P[:,-1])[0]
-    T = -R*C
+    C = np.linalg.lstsq(-H, P[:,-1])[0]
+    T = -R@C
     return K, R, T
 
 # RQ decomposition of a numpy matrix, using only libs that already come with
@@ -205,13 +190,13 @@ def KRT_from_P(P):
 def rf_rq(P):
     P = P.T
     # numpy only provides qr. Scipy has rq but doesn't ship with blender
-    q, r = numpy.linalg.qr(P[ ::-1, ::-1], 'complete')
+    q, r = np.linalg.qr(P[ ::-1, ::-1], 'complete')
     q = q.T
     q = q[ ::-1, ::-1]
     r = r.T
     r = r[ ::-1, ::-1]
 
-    if (numpy.linalg.det(q) < 0):
+    if (np.linalg.det(q) < 0):
         r[:,0] *= -1
         q[0,:] *= -1
     return r, q
@@ -222,7 +207,7 @@ def rf_rq(P):
 # P: numpy 3x4
 def get_blender_camera_from_3x4_P(P, scale):
     # get krt
-    K, R_world2cv, T_world2cv = KRT_from_P(numpy.matrix(P))
+    K, R_world2cv, T_world2cv = KRT_from_P(np.matrix(P))
 
     scene = bpy.context.scene
     sensor_width_in_mm = K[1,1]*K[0,2] / (K[0,0]*K[1,2])
@@ -253,8 +238,8 @@ def get_blender_camera_from_3x4_P(P, scale):
     #      (0, 0, 1)))
 
     R_cv2world = R_world2cv.T
-    rotation =  Matrix(R_cv2world.tolist()) * R_bcam2cv
-    location = -R_cv2world * T_world2cv
+    rotation =  Matrix(R_cv2world.tolist()) @ R_bcam2cv
+    location = -R_cv2world @ T_world2cv
 
     # create a new camera
     bpy.ops.object.add(
@@ -270,7 +255,7 @@ def get_blender_camera_from_3x4_P(P, scale):
     cam.lens = f_in_mm 
     cam.lens_unit = 'MILLIMETERS'
     cam.sensor_width  = sensor_width_in_mm
-    ob.matrix_world = Matrix.Translation(location)*rotation.to_4x4()
+    ob.matrix_world = Matrix.Translation(location) @ rotation.to_4x4()
 
     #     cam.shift_x = -0.05
     #     cam.shift_y = 0.1
@@ -284,13 +269,12 @@ def get_blender_camera_from_3x4_P(P, scale):
     cam.show_name = True
     # Make this the current camera
     scene.camera = ob
-    bpy.context.scene.update()
 
 def test2():
     P = Matrix([
-    [2. ,  0. , - 10. ,   282.  ],
-    [0. ,- 3. , - 14. ,   417.  ],
-    [0. ,  0. , - 1.  , - 18.   ]
+    [-0.54832719, 0.24019061, 0.80102794, -28.70312805],
+    [-0.83313076, -0.2397378, -0.49841642, 9.66498805],
+    [0.07232173, -0.94065629, 0.33156494, 17.17639841]
     ])
     # This test P was constructed as k*[r | t] where
     #     k = [2 0 10; 0 3 14; 0 0 1]
@@ -299,5 +283,46 @@ def test2():
     # k, r, t = KRT_from_P(numpy.matrix(P))
     get_blender_camera_from_3x4_P(P, 1)
     
-get_blender_camera_from_3x4_P(new_dict.get('Calibration/1'), 1)
-'''
+#get_blender_camera_from_3x4_P(new_dict.get('Calibration/1'), 1)
+
+#Array of locations for cameras
+location = Vector((0, 0, 0))
+for count, element in enumerate(new_dict2):
+    x = new_dict.get(calibration_names[count])
+    location = Vector((float(x[0][3]), float(x[1][3]), float(x[2][3])))
+    a = x[0][0]
+    b = x[0][1]
+    c = x[0][2]
+    d = x[0][3]
+    
+    e = x[1][0]
+    f = x[1][1]
+    g = x[1][2]
+    h = x[1][3]
+    
+    i = x[2][0]
+    j = x[2][1]
+    k = x[2][2]
+    l = x[2][3]
+    
+    P = Matrix([
+    [a, b, c, d],
+    [e, f, g, h],
+    [i, j, k, l]
+    ])
+    
+    get_blender_camera_from_3x4_P(P, 1)
+    bpy.context.scene.update()
+    
+
+quaternion_arr = []
+
+quaternion_arr.append([ 0.2999357, -0.4942227, 0.7279474, -0.3686122 ])
+
+    
+"""
+    
+    
+    
+    
+
